@@ -209,6 +209,17 @@ variable "name" {
     EOT
 }
 
+
+variable "cluster_name" {
+  type        = string
+  default     = "arc-poc-cluster"
+  description = <<-EOT
+    ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.
+    This is the only ID element not also included as a `tag`.
+    The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input.
+    EOT
+}
+
 variable "kubernetes_namespace" {
   description = "Default k8s namespace to create"
   type        = string

@@ -40,21 +40,10 @@ module "eks_cluster" {
 
 resource "null_resource" "eks_update_cluster_config" {
   provisioner "local-exec" {
-    command = <<EOT
-      aws eks update-cluster-config \
-        --name "arc-poc-cluster" \
-        --compute-config enabled=true \
-        --kubernetes-network-config '{"elasticLoadBalancing":{"enabled": true}}' \
-        --storage-config '{"blockStorage":{"enabled": true}}'
-    EOT
-
-    environment = {
-      CLUSTER_NAME = "arc-poc-cluster"
-    }
+    command = "aws eks update-cluster-config --name ${var.cluster_name} --compute-config enabled=true --kubernetes-network-config '{\"elasticLoadBalancing\":{\"enabled\": true}}' --storage-config '{\"blockStorage\":{\"enabled\": true}}'"
   }
 
   triggers = {
-    cluster_name = "arc-poc-cluster"
+    cluster_name = var.cluster_name
   }
-  depends_on = [ module.eks_cluster ]
 }
