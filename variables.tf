@@ -182,16 +182,16 @@ variable "ingress_namespace_name" {
   description = "Namespace name"
 }
 
-variable "health_check_image" {
-  default     = "nginx:alpine"
-  description = "Image version for Nginx"
-  type        = string
-}
+# variable "health_check_image" {
+#   default     = "nginx:alpine"
+#   description = "Image version for Nginx"
+#   type        = string
+# }
 
-variable "health_check_domains" {
-  type        = list(string)
-  description = "List of A record domains to create for the health check service"
-}
+# variable "health_check_domains" {
+#   type        = list(string)
+#   description = "List of A record domains to create for the health check service"
+# }
 
 variable "environment" {
   type        = string
@@ -212,6 +212,7 @@ variable "name" {
 variable "kubernetes_namespace" {
   description = "Default k8s namespace to create"
   type        = string
+  default = "kubernetes_namespace"
 }
 
 variable "tags" {
