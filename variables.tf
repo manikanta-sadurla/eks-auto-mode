@@ -195,7 +195,7 @@ variable "ingress_namespace_name" {
 
 variable "environment" {
   type        = string
-  default     = null
+  default     = "poc"
   description = "ID element. Usually used for region e.g. 'uw2', 'us-west-2', OR role 'prod', 'staging', 'dev', 'UAT'"
 }
 
