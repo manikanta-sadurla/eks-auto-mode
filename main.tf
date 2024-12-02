@@ -37,3 +37,24 @@ module "eks_cluster" {
   map_additional_iam_roles = var.map_additional_iam_roles
   allowed_security_groups  = ["sg-02969d9cf1e07897c"]
 }
+
+resource "null_resource" "eks_update_cluster_config" {
+  provisioner "local-exec" {
+    command = <<EOT
+      aws eks update-cluster-config \
+        --name ${var.name} \
+        --compute-config enabled=true \
+        --kubernetes-network-config '{"elasticLoadBalancing":{"enabled": true}}' \
+        --storage-config '{"blockStorage":{"enabled": true}}'
+    EOT
+
+    environment = {
+      CLUSTER_NAME = var.name
+    }
+  }
+
+  triggers = {
+    cluster_name = var.name
+  }
+  depends_on = [ module.eks_cluster ]
+}
