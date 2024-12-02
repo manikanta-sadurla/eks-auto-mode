@@ -38,6 +38,31 @@ module "eks_cluster" {
   allowed_security_groups  = ["sg-02969d9cf1e07897c"]
 }
 
+
+# Fetch the existing EKS cluster information
+data "aws_eks_cluster" "example" {
+  name = "arc-poc-cluster"
+}
+
+# Define the EKS cluster resource with updated access_config
+resource "aws_eks_cluster" "example" {
+  name     = data.aws_eks_cluster.example.name
+  role_arn = data.aws_eks_cluster.example.role_arn
+  vpc_config {
+    subnet_ids = data.aws_eks_cluster.example.vpc_config[0].subnet_ids
+  }
+
+  # Modify the access_config to use API authentication
+  access_config {
+    authentication_mode                         = "API"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
+
+  version = data.aws_eks_cluster.example.version
+}
+
+
+
 resource "null_resource" "eks_update_cluster_config" {
   provisioner "local-exec" {
     command = "aws eks update-cluster-config --name ${var.cluster_name} --compute-config enabled=true --kubernetes-network-config '{\"elasticLoadBalancing\":{\"enabled\": true}}' --storage-config '{\"blockStorage\":{\"enabled\": true}}'"
@@ -46,4 +71,7 @@ resource "null_resource" "eks_update_cluster_config" {
   triggers = {
     cluster_name = var.cluster_name
   }
+  depends_on = [ aws_eks_cluster.example ]
 }
+
+
