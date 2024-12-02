@@ -45,29 +45,29 @@ data "aws_subnets" "private" {
 }
 
 ## security
-data "aws_security_groups" "db_sg" {
-  filter {
-    name   = "eks-automode"
-    values = ["${var.namespace}-${var.environment}-db-sg"]
-  }
+# data "aws_security_groups" "db_sg" {
+#   filter {
+#     name   = "group-name"
+#     values = ["${var.namespace}-${var.environment}-db-sg"]
+#   }
 
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.vpc.id]
-  }
-}
+#   filter {
+#     name   = "vpc-id"
+#     values = [data.aws_vpc.vpc.id]
+#   }
+# }
 
-data "aws_security_groups" "eks_sg" {
-  filter {
-    name   = "eks-automode"
-    values = ["${var.namespace}-${var.environment}-eks-sg"]
-  }
+# data "aws_security_groups" "eks_sg" {
+#   filter {
+#     name   = "group-name"
+#     values = ["${var.namespace}-${var.environment}-eks-sg"]
+#   }
 
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.vpc.id]
-  }
-}
+#   filter {
+#     name   = "vpc-id"
+#     values = [data.aws_vpc.vpc.id]
+#   }
+# }
 
 data "aws_eks_cluster" "eks" {
   name = module.eks_cluster.eks_cluster_id

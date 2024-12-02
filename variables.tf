@@ -169,10 +169,10 @@ variable "kubernetes_labels" {
 #######################################################
 ## data lookups
 #######################################################
-variable "route_53_zone" {
-  type        = string
-  description = "Route 53 domain to generate an ACM request for and to create A records against, i.e. sfrefarch.com. A wildcard subject alternative name is generated with the certificate."
-}
+# variable "route_53_zone" {
+#   type        = string
+#   description = "Route 53 domain to generate an ACM request for and to create A records against, i.e. sfrefarch.com. A wildcard subject alternative name is generated with the certificate."
+# }
 
 
 ## ingress
