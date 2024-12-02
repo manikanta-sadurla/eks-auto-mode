@@ -212,7 +212,7 @@ variable "name" {
 variable "kubernetes_namespace" {
   description = "Default k8s namespace to create"
   type        = string
-  default = "kubernetes_namespace"
+  default = "kubernetes-namespace"
 }
 
 variable "tags" {
