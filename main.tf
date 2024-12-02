@@ -54,7 +54,6 @@ resource "null_resource" "eks_update_cluster_config" {
   triggers = {
     cluster_name = var.cluster_name
   }
-  depends_on = [ aws_eks_cluster.example ]
 }
 
 
