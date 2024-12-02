@@ -47,7 +47,7 @@ data "aws_subnets" "private" {
 ## security
 data "aws_security_groups" "db_sg" {
   filter {
-    name   = "group-name"
+    name   = "eks-automode"
     values = ["${var.namespace}-${var.environment}-db-sg"]
   }
 
@@ -59,7 +59,7 @@ data "aws_security_groups" "db_sg" {
 
 data "aws_security_groups" "eks_sg" {
   filter {
-    name   = "group-name"
+    name   = "eks-automode"
     values = ["${var.namespace}-${var.environment}-eks-sg"]
   }
 
