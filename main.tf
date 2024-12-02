@@ -44,23 +44,6 @@ data "aws_eks_cluster" "example" {
   name = "arc-poc-cluster"
 }
 
-# Define the EKS cluster resource with updated access_config
-resource "aws_eks_cluster" "example" {
-  name     = data.aws_eks_cluster.example.name
-  role_arn = data.aws_eks_cluster.example.role_arn
-  vpc_config {
-    subnet_ids = data.aws_eks_cluster.example.vpc_config[0].subnet_ids
-  }
-
-  # Modify the access_config to use API authentication
-  access_config {
-    authentication_mode                         = "API"
-    bootstrap_cluster_creator_admin_permissions = true
-  }
-
-  version = data.aws_eks_cluster.example.version
-}
-
 
 
 resource "null_resource" "eks_update_cluster_config" {
@@ -75,3 +58,4 @@ resource "null_resource" "eks_update_cluster_config" {
 }
 
 
+### Manually added API Access in EKS
