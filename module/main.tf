@@ -70,6 +70,11 @@ resource "aws_eks_cluster" "example" {
     public_access_cidrs    = var.public_access_cidrs
   }
 
+  access_config {
+    authentication_mode                   = var.authentication_mode
+    bootstrap_cluster_creator_admin_permissions = var.bootstrap_permissions
+  }
+
   # Optional Arguments
   enabled_cluster_log_types = var.enabled_cluster_log_types
 
