@@ -133,7 +133,8 @@ resource "aws_eks_node_group" "eks_node_group" {
 
 # Data to get the EKS optimized AMI version
 data "aws_ssm_parameter" "eks_ami_release_version" {
-  name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.example.version}/amazon-linux-2023/x86_64/standard/recommended/release_version"
+  # name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.example.version}/amazon-linux-2023/x86_64/standard/recommended/release_version"
+  name = "/aws/service/eks/optimized-ami/1.31/amazon-linux-2023/x86_64/nvidia/amazon-eks-node-al2023-x86_64-nvidia-560-1.31-v20241016/image_id"
 }
 
 # EKS Cluster Example (Use your actual cluster name and configuration)
