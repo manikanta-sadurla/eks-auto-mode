@@ -2,8 +2,8 @@
 cluster_name          = "playhq-cluster"
 kubernetes_version    = "1.31" 
 # vpc_id                = "vpc-12345678"
-subnet_ids            = ["subnet-12345678", "subnet-23456789"]
-security_group_ids    = ["sg-12345678", "sg-23456789"]
+subnet_ids            = ["arc-poc-private-subnet-private-us-east-1b", "arc-poc-private-subnet-private-us-east-1a"]
+security_group_ids    = ["sg-02969d9cf1e07897c"]
 
 authentication_mode              = "API_AND_CONFIG_MAP"
 bootstrap_permissions            = false
@@ -36,7 +36,8 @@ encryption_key_arn = ""
 #vpc_config 
   endpoint_private_access = true
   endpoint_public_access  = true
-  public_access_cidrs     = ["10.0.0.0/24"]
+  # public_access_cidrs     = ["10.0.0.0/24"]
+  public_access_cidrs     = ["0.0.0.0"]
 
 
  # Kubernetes version (Optional, specify if required)
