@@ -6,7 +6,10 @@ data "tls_certificate" "cluster" {
 resource "aws_iam_openid_connect_provider" "default" {
   count = local.enabled && var.oidc_provider_enabled ? 1 : 0
   url   = one(aws_eks_cluster.example[*].identity[0].oidc[0].issuer)
-  tags  = module.label.tags
+  tags  = {
+  Environment = "poc"
+  Project     = "play-hq"
+}
 
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [one(data.tls_certificate.cluster[*].certificates[0].sha1_fingerprint)]
@@ -23,7 +26,10 @@ resource "aws_eks_addon" "cluster" {
   resolve_conflicts_on_update = lookup(each.value, "resolve_conflicts_on_update", lookup(each.value, "resolve_conflicts", null))
   service_account_role_arn    = lookup(each.value, "service_account_role_arn", null)
 
-  tags = module.label.tags
+  tags = {
+  Environment = "poc"
+  Project     = "play-hq"
+}
 
   depends_on = [
 
