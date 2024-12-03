@@ -61,7 +61,8 @@ resource "aws_launch_template" "eks_node_launch_template" {
     }
   }
 
-  image_id = var.image_id
+  # image_id = var.image_id
+  image_id = local.ami_id
   key_name = var.key_name
 
   dynamic "tag_specifications" {
@@ -153,14 +154,16 @@ variable "launch_template_block_device_mappings" {
   default = []
 }
 
-variable "image_id" {
-  description = "AMI ID to use for the EC2 instance."
-  type        = string
-}
+# variable "image_id" {
+#   description = "AMI ID to use for the EC2 instance."
+#   type        = string
+
+# }
 
 variable "key_name" {
   description = "The name of the SSH key pair to use for the EC2 instance."
   type        = string
+  default = ""
 }
 
 variable "launch_template_tag_specifications" {
