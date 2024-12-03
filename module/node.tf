@@ -93,7 +93,8 @@ resource "aws_eks_node_group" "eks_node_group" {
 
   ami_type        = "AL2_x86_64"
   instance_types  = ["t3.medium"]
-  release_version = data.aws_ssm_parameter.eks_ami_release_version.value
+  # release_version = data.aws_ssm_parameter.eks_ami_release_version.value
+    release_version = local.ami_id == "" ? data.aws_ssm_parameter.eks_ami_release_version.value : null
   launch_template {
     id      = aws_launch_template.eks_node_launch_template.id
     version = "$Latest"
