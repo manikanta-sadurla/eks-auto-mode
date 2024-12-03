@@ -76,7 +76,7 @@ variable "addons" {
     {
       addon_name             = "eks-pod-identity-agent"
       addon_version          = "v1.3.4-eksbuild.1"
-      configuration_values   = {}
+      configuration_values   = ""
       resolve_conflicts      = "PRESERVE"
       resolve_conflicts_on_create = "NONE"
       resolve_conflicts_on_update = "NONE"
