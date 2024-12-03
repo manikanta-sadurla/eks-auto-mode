@@ -62,7 +62,8 @@ resource "aws_launch_template" "eks_node_launch_template" {
   }
 
   # image_id = var.image_id
-  image_id = local.ami_id
+  # image_id = local.ami_id
+  image_id = data.aws_ami.amazon_linux.id
   key_name = var.key_name
 
   dynamic "tag_specifications" {
@@ -95,7 +96,8 @@ resource "aws_eks_node_group" "eks_node_group" {
   ami_type        = "CUSTOM"
   instance_types  = ["t3.medium"]
   # release_version = data.aws_ssm_parameter.eks_ami_release_version.value
-    release_version = local.ami_id == "" ? data.aws_ssm_parameter.eks_ami_release_version.value : null
+    # release_version = local.ami_id == "" ? data.aws_ssm_parameter.eks_ami_release_version.value : null
+    release_version = null
   launch_template {
     id      = aws_launch_template.eks_node_launch_template.id
     version = "$Latest"
@@ -155,6 +157,23 @@ variable "launch_template_block_device_mappings" {
   }))
   default = []
 }
+
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["amazon"]
+}
+
 
 # variable "image_id" {
 #   description = "AMI ID to use for the EC2 instance."
