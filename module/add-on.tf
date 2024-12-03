@@ -73,18 +73,18 @@ variable "addons" {
     delete_timeout         = string
   }))
   default = [
-    # {
-    #   addon_name             = "vpc-cni"
-    #   addon_version          = "v1.9.0-eksbuild.1"
-    #   configuration_values   = {}
-    #   resolve_conflicts      = "PRESERVE"
-    #   resolve_conflicts_on_create = "NONE"
-    #   resolve_conflicts_on_update = "NONE"
-    #   service_account_role_arn = null
-    #   create_timeout         = "30m"
-    #   update_timeout         = "30m"
-    #   delete_timeout         = "30m"
-    # },
+    {
+      addon_name             = "eks-pod-identity-agent"
+      addon_version          = "v1.3.4-eksbuild.1"
+      configuration_values   = {}
+      resolve_conflicts      = "PRESERVE"
+      resolve_conflicts_on_create = "NONE"
+      resolve_conflicts_on_update = "NONE"
+      service_account_role_arn = null
+      create_timeout         = "30m"
+      update_timeout         = "30m"
+      delete_timeout         = "30m"
+    },
     # Add other add-ons as needed
   ]
 }

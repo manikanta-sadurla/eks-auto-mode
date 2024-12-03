@@ -41,7 +41,7 @@ resource "aws_iam_role" "eks_cluster_role" {
 resource "aws_iam_role_policy_attachment" "eks_policies" {
   for_each = {
     "eks_block_storage" = "arn:aws:iam::aws:policy/AmazonEKSBlockStoragePolicy",
-    "eks_compute"       = "arn:aws:iam::aws:policy/AmazonEKSComputePolicy",
+    # "eks_compute"       = "arn:aws:iam::aws:policy/AmazonEKSComputePolicy",
     "eks_load_balancing" = "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy",
     "eks_networking"     = "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy"
     "eks_worker_node"     = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
