@@ -63,7 +63,8 @@ variable "addons" {
   type = list(object({
     addon_name             = string
     addon_version          = string
-    configuration_values   = map(string)
+    # configuration_values   = map(string)
+    configuration_values   = string
     resolve_conflicts      = string
     resolve_conflicts_on_create = string
     resolve_conflicts_on_update = string
