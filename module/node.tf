@@ -6,8 +6,8 @@ resource "aws_iam_role" "eks_node_group_role" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
         Principal = {
           Service = "ec2.amazonaws.com"
         }
@@ -70,7 +70,7 @@ resource "aws_launch_template" "eks_node_launch_template" {
     for_each = var.launch_template_tag_specifications
     content {
       resource_type = tag_specifications.value
-    #   tags          = var.node_tags
+      #   tags          = var.node_tags
     }
   }
 }
@@ -93,20 +93,20 @@ resource "aws_eks_node_group" "eks_node_group" {
   }
 
   # ami_type        = "AL2_x86_64"
-  ami_type        = "CUSTOM"
-  instance_types  = ["t3.medium"]
+  ami_type       = "CUSTOM"
+  instance_types = ["t3.medium"]
   # release_version = data.aws_ssm_parameter.eks_ami_release_version.value
-    # release_version = local.ami_id == "" ? data.aws_ssm_parameter.eks_ami_release_version.value : null
-    release_version = null
+  # release_version = local.ami_id == "" ? data.aws_ssm_parameter.eks_ami_release_version.value : null
+  release_version = null
   launch_template {
     id      = aws_launch_template.eks_node_launch_template.id
     version = "$Latest"
   }
 
-#   remote_access {
-#     ec2_ssh_key = var.ec2_ssh_key
-#     source_security_group_ids = var.source_security_group_ids
-#   }
+  #   remote_access {
+  #     ec2_ssh_key = var.ec2_ssh_key
+  #     source_security_group_ids = var.source_security_group_ids
+  #   }
 
   tags = {
     "Environment" = "Production"
@@ -184,7 +184,7 @@ data "aws_ami" "amazon_linux" {
 variable "key_name" {
   description = "The name of the SSH key pair to use for the EC2 instance."
   type        = string
-  default = ""
+  default     = ""
 }
 
 variable "launch_template_tag_specifications" {

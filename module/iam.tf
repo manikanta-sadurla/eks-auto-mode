@@ -1,10 +1,10 @@
 resource "aws_iam_role" "eks_cluster_role" {
-  name               = "EKSClusterRole"
+  name = "EKSClusterRole"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect    = "Allow"
+        Effect = "Allow"
         Principal = {
           Service = "eks.amazonaws.com"
         }
@@ -42,11 +42,14 @@ resource "aws_iam_role_policy_attachment" "eks_policies" {
   for_each = {
     "eks_block_storage" = "arn:aws:iam::aws:policy/AmazonEKSBlockStoragePolicy",
     # "eks_compute"       = "arn:aws:iam::aws:policy/AmazonEKSComputePolicy",
-    "eks_load_balancing" = "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy",
-    "eks_networking"     = "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy"
-    "eks_worker_node"     = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-    "eks_container_registry_readyonly"     = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-    "eks_cni_policy"     = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+    "eks_load_balancing"               = "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy",
+    "eks_networking"                   = "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy"
+    "eks_worker_node"                  = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+    "eks_container_registry_readyonly" = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+    "eks_cni_policy"                   = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+    "eks_cluster"                      = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+    "eks_service"                      = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+
 
   }
 
