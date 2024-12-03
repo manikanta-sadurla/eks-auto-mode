@@ -37,7 +37,7 @@ encryption_key_arn = ""
   endpoint_private_access = true
   endpoint_public_access  = true
   # public_access_cidrs     = ["10.0.0.0/24"]
-  public_access_cidrs     = ["0.0.0.0"]
+  public_access_cidrs     = ["0.0.0.0/0"]
 
 
  # Kubernetes version (Optional, specify if required)
