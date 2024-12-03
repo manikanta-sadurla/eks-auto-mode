@@ -4,10 +4,10 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "role_arn" {
-  description = "IAM Role ARN for EKS control plane API access."
-  type        = string
-}
+# variable "role_arn" {
+#   description = "IAM Role ARN for EKS control plane API access."
+#   type        = string
+# }
 
 variable "subnet_ids" {
   description = "List of subnet IDs for EKS cross-account elastic network interfaces."
