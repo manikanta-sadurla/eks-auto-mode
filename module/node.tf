@@ -63,7 +63,9 @@ resource "aws_launch_template" "eks_node_launch_template" {
 
   # image_id = var.image_id
   # image_id = local.ami_id
-  image_id = data.aws_ami.amazon_linux.id
+
+  # image_id = data.aws_ami.amazon_linux.id
+  image_id = data.aws_ssm_parameter.eks_ami.value
   key_name = var.key_name
 
   dynamic "tag_specifications" {
