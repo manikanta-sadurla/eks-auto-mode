@@ -40,9 +40,9 @@ module "eks_cluster" {
 
 
 # Fetch the existing EKS cluster information
-data "aws_eks_cluster" "example" {
-  name = "arc-poc-cluster"
-}
+# data "aws_eks_cluster" "example" {
+#   name = "arc-poc-cluster"
+# }
 
 
 
