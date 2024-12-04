@@ -144,7 +144,7 @@ resource "kubernetes_config_map" "aws_auth" {
   data = {
     mapRoles = jsonencode([
       for user in var.user_definitions : {
-        rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${user.user_name}"
+        rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${user.user_name}"
         username = user.user_name
         groups   = user.groups
       }
