@@ -33,49 +33,49 @@ resource "aws_iam_role_policy_attachment" "eks_node_group_registry_policy" {
 }
 
 # Launch Template for EKS Node Group
-resource "aws_launch_template" "eks_node_launch_template" {
-  name_prefix = "eks-node-launch-template"
+# resource "aws_launch_template" "eks_node_launch_template" {
+#   name_prefix = "eks-node-launch-template"
 
-  ebs_optimized = true
+#   ebs_optimized = true
 
-  dynamic "block_device_mappings" {
-    for_each = var.launch_template_block_device_mappings
-    content {
-      device_name  = block_device_mappings.key
-      no_device    = block_device_mappings.value.no_device
-      virtual_name = block_device_mappings.value.virtual_name
+#   dynamic "block_device_mappings" {
+#     for_each = var.launch_template_block_device_mappings
+#     content {
+#       device_name  = block_device_mappings.key
+#       no_device    = block_device_mappings.value.no_device
+#       virtual_name = block_device_mappings.value.virtual_name
 
-      dynamic "ebs" {
-        for_each = block_device_mappings.value.ebs == null ? [] : [block_device_mappings.value.ebs]
-        content {
-          delete_on_termination = ebs.value.delete_on_termination
-          encrypted             = ebs.value.encrypted
-          iops                  = ebs.value.iops
-          kms_key_id            = ebs.value.kms_key_id
-          snapshot_id           = ebs.value.snapshot_id
-          throughput            = ebs.value.throughput
-          volume_size           = ebs.value.volume_size
-          volume_type           = ebs.value.volume_type
-        }
-      }
-    }
-  }
+#       dynamic "ebs" {
+#         for_each = block_device_mappings.value.ebs == null ? [] : [block_device_mappings.value.ebs]
+#         content {
+#           delete_on_termination = ebs.value.delete_on_termination
+#           encrypted             = ebs.value.encrypted
+#           iops                  = ebs.value.iops
+#           kms_key_id            = ebs.value.kms_key_id
+#           snapshot_id           = ebs.value.snapshot_id
+#           throughput            = ebs.value.throughput
+#           volume_size           = ebs.value.volume_size
+#           volume_type           = ebs.value.volume_type
+#         }
+#       }
+#     }
+#   }
 
-  # image_id = var.image_id
-  # image_id = local.ami_id
+#   # image_id = var.image_id
+#   # image_id = local.ami_id
 
-  # image_id = data.aws_ami.amazon_linux.id
-  image_id = data.aws_ssm_parameter.eks_ami_release_version.value
-  key_name = var.key_name
+#   # image_id = data.aws_ami.amazon_linux.id
+#   image_id = data.aws_ssm_parameter.eks_ami_release_version.value
+#   key_name = var.key_name
 
-  dynamic "tag_specifications" {
-    for_each = var.launch_template_tag_specifications
-    content {
-      resource_type = tag_specifications.value
-      #   tags          = var.node_tags
-    }
-  }
-}
+#   dynamic "tag_specifications" {
+#     for_each = var.launch_template_tag_specifications
+#     content {
+#       resource_type = tag_specifications.value
+#       #   tags          = var.node_tags
+#     }
+#   }
+# }
 
 # EKS Node Group
 resource "aws_eks_node_group" "eks_node_group" {
@@ -94,16 +94,16 @@ resource "aws_eks_node_group" "eks_node_group" {
     max_unavailable = 1
   }
 
-  # ami_type        = "AL2_x86_64"
-  ami_type       = "CUSTOM"
+  ami_type        = "AL2_x86_64"
+  # ami_type       = "CUSTOM"
   instance_types = ["t3.medium"]
   # release_version = data.aws_ssm_parameter.eks_ami_release_version.value
   # release_version = local.ami_id == "" ? data.aws_ssm_parameter.eks_ami_release_version.value : null
   release_version = null
-  launch_template {
-    id      = aws_launch_template.eks_node_launch_template.id
-    version = "$Latest"
-  }
+  # launch_template {
+  #   id      = aws_launch_template.eks_node_launch_template.id
+  #   version = "$Latest"
+  # }
 
   #   remote_access {
   #     ec2_ssh_key = var.ec2_ssh_key
