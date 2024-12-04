@@ -118,6 +118,8 @@ resource "aws_eks_cluster" "example" {
 }
 
 
+
+#### Enabling EKS Auto Mode ##
 resource "null_resource" "eks_update_cluster_config" {
   provisioner "local-exec" {
     command = "aws eks update-cluster-config --name ${var.cluster_name} --compute-config enabled=true --kubernetes-network-config '{\"elasticLoadBalancing\":{\"enabled\": true}}' --storage-config '{\"blockStorage\":{\"enabled\": true}}'"
@@ -126,4 +128,46 @@ resource "null_resource" "eks_update_cluster_config" {
   triggers = {
     cluster_name = var.cluster_name
   }
+}
+
+
+# Fetch AWS account ID dynamically
+data "aws_caller_identity" "current" {}
+
+# Create the Kubernetes ConfigMap dynamically
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles = jsonencode([
+      for user in var.user_definitions : {
+        rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${user.user_name}"
+        username = user.user_name
+        groups   = user.groups
+      }
+    ])
+    mapUsers = jsonencode([])
+  }
+}
+
+# Variable to accept multiple user definitions
+variable "user_definitions" {
+  description = "List of AWS IAM users with their corresponding roles and groups"
+  type = list(object({
+    user_name = string
+    groups    = list(string)
+  }))
+  default = [
+    # {
+    #   user_name = "YOUR_ROLE_NAME_1"
+    #   groups    = ["system:masters"]
+    # },
+    # {
+    #   user_name = "YOUR_ROLE_NAME_2"
+    #   groups    = ["system:masters"]
+    # }
+  ]
 }

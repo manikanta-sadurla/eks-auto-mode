@@ -40,4 +40,13 @@ endpoint_public_access  = true
 public_access_cidrs = ["0.0.0.0/0"]
 
 
-# Kubernetes version (Optional, specify if required)
+user_definitions = [
+    {
+      user_name = "manikanta.sadurla"
+      groups    = ["system:masters"]
+    },
+    # {
+    #   user_name = "ReadOnlyRole"
+    #   groups    = ["read-only"]
+    # }
+  ]

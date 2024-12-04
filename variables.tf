@@ -234,3 +234,22 @@ variable "tags" {
     Neither the tag keys nor the tag values will be modified by this module.
     EOT
 }
+
+# Variable to accept multiple role definitions
+variable "role_definitions" {
+  description = "List of roles with their corresponding usernames and groups"
+  type = list(object({
+    role_name = string
+    groups    = list(string)
+  }))
+  default = [
+    {
+      role_name = "YOUR_ROLE_NAME_1"
+      groups    = ["system:masters"]
+    },
+    {
+      role_name = "YOUR_ROLE_NAME_2"
+      groups    = ["system:masters"]
+    }
+  ]
+}
