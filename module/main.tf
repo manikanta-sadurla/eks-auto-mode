@@ -122,7 +122,7 @@ resource "aws_eks_cluster" "example" {
 #### Enabling EKS Auto Mode ##
 resource "null_resource" "eks_update_cluster_config" {
   provisioner "local-exec" {
-    command = "aws eks update-cluster-config --name ${var.cluster_name} --compute-config enabled=true --kubernetes-network-config '{\"elasticLoadBalancing\":{\"enabled\": true}}' --storage-config '{\"blockStorage\":{\"enabled\": true}}'"
+    command = "aws eks update-cluster-config --name ${var.cluster_name} --compute-config enabled=true --kubernetes-network-config '{\"elasticLoadBalancing\":{\"enabled\": true}}' --storage-config '{\"blockStorage\":{\"enabled\": true}}' --node-role-arn ${aws_iam_role.eks_node_group_role.arn} --node-pools '[\"general-purpose\", \"system\"]'"
   }
 
   triggers = {
