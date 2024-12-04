@@ -17,35 +17,32 @@ resource "aws_iam_role" "eks_node_group_role" {
 }
 
 # Attach required IAM policies to the role
-# resource "aws_iam_role_policy_attachment" "eks_node_group_worker_policy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-#   role       = aws_iam_role.eks_node_group_role.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "eks_node_group_cni_policy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-#   role       = aws_iam_role.eks_node_group_role.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "eks_node_group_registry_policy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-#   role       = aws_iam_role.eks_node_group_role.name
-# }
-
-resource "aws_iam_role_policy_attachment" "eks_node_group_policies" {
-  for_each = toset([
-    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
-    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodeMinimalPolicy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly",
-    "arn:aws:iam::aws:policy/AmazonSSMPatchAssociation",
-    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-
-  ])
-  policy_arn = each.value
+resource "aws_iam_role_policy_attachment" "eks_node_group_worker_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.eks_node_group_role.name
 }
+
+resource "aws_iam_role_policy_attachment" "eks_node_group_cni_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.eks_node_group_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "eks_node_group_registry_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.eks_node_group_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_path" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMPatchAssociation"
+  role       = aws_iam_role.eks_node_group_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_managed" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.eks_node_group_role.name
+}
+
+
 
 
 # Launch Template for EKS Node Group
@@ -131,9 +128,13 @@ resource "aws_eks_node_group" "eks_node_group" {
     "Team"        = "DevOps"
   }
 
-  depends_on = [
-    aws_iam_role_policy_attachment.eks_node_group_policies
-  ]
+  depends_on = [ aws_iam_role_policy_attachment.eks_node_group_cni_policy,
+                 aws_iam_role_policy_attachment.eks_node_group_worker_policy,
+                 aws_iam_role_policy_attachment.eks_node_group_registry_policy,
+                 aws_iam_role_policy_attachment.eks_node_group_registry_policy,
+                 aws_iam_role_policy_attachment.ssm_path,
+                 aws_iam_role_policy_attachment.ssm_managed,
+                 ]
 }
 
 # Example Subnets for EKS Node Group
