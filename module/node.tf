@@ -32,15 +32,15 @@ resource "aws_iam_role_policy_attachment" "eks_node_group_registry_policy" {
   role       = aws_iam_role.eks_node_group_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "ssm_path" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMPatchAssociation"
-  role       = aws_iam_role.eks_node_group_role.name
-}
+# resource "aws_iam_role_policy_attachment" "ssm_path" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMPatchAssociation"
+#   role       = aws_iam_role.eks_node_group_role.name
+# }
 
-resource "aws_iam_role_policy_attachment" "ssm_managed" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  role       = aws_iam_role.eks_node_group_role.name
-}
+# resource "aws_iam_role_policy_attachment" "ssm_managed" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+#   role       = aws_iam_role.eks_node_group_role.name
+# }
 
 
 
@@ -132,8 +132,8 @@ resource "aws_eks_node_group" "eks_node_group" {
                  aws_iam_role_policy_attachment.eks_node_group_worker_policy,
                  aws_iam_role_policy_attachment.eks_node_group_registry_policy,
                  aws_iam_role_policy_attachment.eks_node_group_registry_policy,
-                 aws_iam_role_policy_attachment.ssm_path,
-                 aws_iam_role_policy_attachment.ssm_managed,
+                #  aws_iam_role_policy_attachment.ssm_path,
+                #  aws_iam_role_policy_attachment.ssm_managed,
                  ]
 }
 
