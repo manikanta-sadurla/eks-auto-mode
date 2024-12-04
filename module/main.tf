@@ -116,3 +116,14 @@ resource "aws_eks_cluster" "example" {
 
   tags = merge(var.default_tags, var.resource_tags)
 }
+
+
+resource "null_resource" "eks_update_cluster_config" {
+  provisioner "local-exec" {
+    command = "aws eks update-cluster-config --name ${var.cluster_name} --compute-config enabled=true --kubernetes-network-config '{\"elasticLoadBalancing\":{\"enabled\": true}}' --storage-config '{\"blockStorage\":{\"enabled\": true}}'"
+  }
+
+  triggers = {
+    cluster_name = var.cluster_name
+  }
+}
