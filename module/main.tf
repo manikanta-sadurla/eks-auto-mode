@@ -115,13 +115,13 @@ resource "aws_eks_cluster" "example" {
   }
 
   # Conditional Kubernetes Network Config
-  dynamic "kubernetes_network_config" {
-    for_each = var.service_ipv4_cidr != "" ? [1] : []
-    content {
-      service_ipv4_cidr = var.service_ipv4_cidr
-      ip_family         = var.ip_family
-    }
-  }
+  # dynamic "kubernetes_network_config" {
+  #   for_each = var.service_ipv4_cidr != "" ? [1] : []
+  #   content {
+  #     service_ipv4_cidr = var.service_ipv4_cidr
+  #     ip_family         = var.ip_family
+  #   }
+  # }
 
   # Conditional Outpost Config
   dynamic "outpost_config" {
