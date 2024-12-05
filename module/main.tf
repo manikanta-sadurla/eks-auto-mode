@@ -81,7 +81,7 @@ resource "aws_eks_cluster" "example" {
 ### When using EKS Auto Mode compute_config.enabled, kubernetes_network_config.elastic_load_balancing.enabled, 
 ## and storage_config.block_storage.enabled must *ALL be set to true. 
 #Likewise for disabling EKS Auto Mode, all three arguments must be set to false.
-
+  bootstrap_self_managed_addons = false # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
     compute_config {
     enabled       = true
     node_pools    = ["general-purpose"]
