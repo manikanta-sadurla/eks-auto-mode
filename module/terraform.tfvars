@@ -6,10 +6,10 @@ subnet_ids         = ["subnet-066d0c78479b72e77", "subnet-064b80a494fed9835"]
 security_group_ids = ["sg-02969d9cf1e07897c"]
 
 authentication_mode   = "API_AND_CONFIG_MAP"
-bootstrap_permissions = false
+bootstrap_permissions = true
 
 
-bootstrap_self_managed_addons = true
+# bootstrap_self_managed_addons = true
 enabled_cluster_log_types     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 encryption_key_arn            = ""
 

@@ -135,7 +135,6 @@ resource "aws_eks_cluster" "example" {
     }
   }
 
-  bootstrap_self_managed_addons = var.bootstrap_self_managed_addons
 
   version = var.kubernetes_version
 
