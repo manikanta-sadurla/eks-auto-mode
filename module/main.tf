@@ -75,6 +75,31 @@ resource "aws_eks_cluster" "example" {
     bootstrap_cluster_creator_admin_permissions = var.bootstrap_permissions
   }
 
+
+### EKS Auto Mode ###
+
+### When using EKS Auto Mode compute_config.enabled, kubernetes_network_config.elastic_load_balancing.enabled, 
+## and storage_config.block_storage.enabled must *ALL be set to true. 
+#Likewise for disabling EKS Auto Mode, all three arguments must be set to false.
+
+    compute_config {
+    enabled       = true
+    node_pools    = ["general-purpose"]
+    node_role_arn = aws_iam_role.eks_node_group_role.arn
+  }
+
+  kubernetes_network_config {
+    elastic_load_balancing {
+      enabled = true
+    }
+  }
+
+  storage_config {
+    block_storage {
+      enabled = true
+    }
+  }
+
   # Optional Arguments
   enabled_cluster_log_types = var.enabled_cluster_log_types
 
