@@ -14,10 +14,19 @@ output "rabbitmq_iam_role_arn" {
   value       = module.rabbitmq.iam_role_arn
 }
 
-output "rabbitmq_kms_key_arn" {
-  description = "ARN of the KMS key"
-  value       = module.rabbitmq.kms_key_arn
-}
+# │ Error: Unsupported attribute
+# │ 
+# │   on outputs.tf line 19, in output "rabbitmq_kms_key_arn":
+# │   19:   value       = module.rabbitmq.kms_key_arn
+# │     ├────────────────
+# │     │ module.rabbitmq is a object
+# │ 
+# │ This object does not have an attribute named "kms_key_arn".
+# output "rabbitmq_kms_key_arn" {
+#   description = "ARN of the KMS key"
+#   value       = module.rabbitmq.kms_key_arn
+# }
+
 
 output "rabbitmq_instance_profile_name" {
   description = "Name of the IAM instance profile"
