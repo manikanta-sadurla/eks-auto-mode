@@ -145,7 +145,7 @@ resource "aws_launch_template" "rabbitmq" {
 }
 
 data "template_file" "cloudwatch_config" {
-  template = file("${path.module}/cloudwatch_config.json.tpl")
+  template = file("${path.module}/templates/cloudwatch_config.json.tpl")
 
   # vars = {
   #   cluster_name = local.cluster_name
