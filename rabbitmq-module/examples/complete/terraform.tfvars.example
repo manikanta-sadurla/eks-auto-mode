@@ -1,0 +1,13 @@
+aws_region = "us-west-2"
+vpc_id = "vpc-xxxxxxxx"
+subnet_ids = [
+  "subnet-xxxxxxxx",
+  "subnet-yyyyyyyy",
+  "subnet-zzzzzzzz"
+]
+allowed_cidr_blocks = ["10.0.0.0/16"]
+admin_user = "admin"
+admin_password = "CHANGE_ME_IN_PRODUCTION"
+sns_topic_arn = "arn:aws:sns:us-west-2:123456789012:alerts"
+project_name = "myproject"
+environment = "prod"
