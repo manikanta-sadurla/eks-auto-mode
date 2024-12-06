@@ -42,6 +42,11 @@ resource "aws_iam_role_policy_attachment" "eks_node_group_registry_policy" {
 #   role       = aws_iam_role.eks_node_group_role.name
 # }
 
+resource "aws_iam_role_policy_attachment" "eks_node_group_registry_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.eks_node_group_role.name
+}
+
 
 
 
@@ -113,6 +118,9 @@ resource "aws_eks_node_group" "eks_node_group" {
   # release_version = data.aws_ssm_parameter.eks_ami_release_version.value
   # release_version = local.ami_id == "" ? data.aws_ssm_parameter.eks_ami_release_version.value : null
   release_version = null
+
+  ### you cannot specify both the launch_template block and the remote_access block simultaneously
+
   # launch_template {
   #   id      = aws_launch_template.eks_node_launch_template.id
   #   version = "$Latest"

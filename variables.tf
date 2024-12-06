@@ -143,21 +143,21 @@ variable "desired_size" {
   description = "Desired number of worker nodes."
   type        = number
 
-  default = 2
+  default = 1
 }
 
 variable "min_size" {
   description = "The minimum size of the AutoScaling Group."
   type        = number
 
-  default = 2
+  default = 1
 }
 
 variable "max_size" {
   description = "The maximum size of the AutoScaling Group."
   type        = number
 
-  default = 4
+  default = 1
 }
 
 variable "kubernetes_labels" {

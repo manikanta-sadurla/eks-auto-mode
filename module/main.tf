@@ -84,7 +84,7 @@ resource "aws_eks_cluster" "example" {
   bootstrap_self_managed_addons = false # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
     compute_config {
     enabled       = true
-    node_pools    = ["general-purpose"]
+    node_pools    = []
     node_role_arn = aws_iam_role.eks_node_group_role.arn
   }
 
