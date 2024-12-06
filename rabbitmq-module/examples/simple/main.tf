@@ -8,6 +8,7 @@ module "rabbitmq" {
 
   name        = var.name
   environment = var.environment
+  ami_id = "ami-0453ec754f44f9a4a"
   
   vpc_id         = var.vpc_id
   subnet_ids     = var.subnet_ids
