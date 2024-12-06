@@ -4,7 +4,7 @@ name       = "myapp"
 environment = "dev"
 
 vpc_id     = "vpc-0e6c09980580ecbf6"
-subnet_ids = ["subnet-066d0c78479b72e77"]
+subnet_ids = ["subnet-01efab943d2bbe156"]
 
 instance_type  = "t3.medium"
 instance_count = 1
