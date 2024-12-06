@@ -128,6 +128,7 @@ resource "aws_launch_template" "rabbitmq" {
     admin_password   = var.admin_password
     enable_clustering = var.enable_clustering
     region           = data.aws_region.current.name
+    cloudwatch_config = data.template_file.cloudwatch_config.rendered
   }))
 
   metadata_options {
@@ -141,6 +142,15 @@ resource "aws_launch_template" "rabbitmq" {
   }
 
   tags = local.common_tags
+}
+
+data "template_file" "cloudwatch_config" {
+  template = file("${path.module}/cloudwatch_config.json.tpl")
+
+  # vars = {
+  #   cluster_name = local.cluster_name
+  #   instance_id  = local.instance_id
+  # }
 }
 
 # Auto Scaling Group

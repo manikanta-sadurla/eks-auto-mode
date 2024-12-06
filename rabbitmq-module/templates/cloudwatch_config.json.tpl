@@ -42,8 +42,8 @@
         "collect_list": [
           {
             "file_path": "/var/log/rabbitmq/*.log",
-            "log_group_name": "/aws/rabbitmq/${cluster_name}",
-            "log_stream_name": "{instance_id}",
+            "log_group_name": "/aws/rabbitmq/test",
+            "log_stream_name": "test",
             "timestamp_format": "%Y-%m-%d %H:%M:%S",
             "retention_in_days": 30
           }
