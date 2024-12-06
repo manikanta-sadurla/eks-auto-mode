@@ -1,10 +1,10 @@
 # simple/terraform.tfvars
-aws_region = "us-west-2"
+aws_region = "us-west-1"
 name       = "myapp"
 environment = "dev"
 
-vpc_id     = "vpc-12345678"
-subnet_ids = ["subnet-12345678"]
+vpc_id     = "vpc-0e6c09980580ecbf6"
+subnet_ids = ["subnet-066d0c78479b72e77"]
 
 instance_type  = "t3.medium"
 instance_count = 1
