@@ -1,3 +1,55 @@
+# IAM Role for EKS Cluster
+resource "aws_iam_role" "eks_cluster_role" {
+  name               = var.role_name
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+        Action = [
+          "sts:AssumeRole",
+          "sts:TagSession"
+        ]
+      }
+    ]
+  })
+
+  tags = var.tags
+}
+
+# Attach AWS Managed Policies
+resource "aws_iam_role_policy_attachment" "managed_policy_attachments" {
+  for_each = toset(var.aws_managed_policies)
+  role     = aws_iam_role.eks_cluster_role.name
+  policy_arn = each.value
+}
+
+# Create Custom Policy
+resource "aws_iam_policy" "custom_policy" {
+  name   = var.custom_policy_name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      for statement in var.custom_policy_statements : {
+        Sid      = statement.sid
+        Effect   = statement.effect
+        Action   = statement.actions
+        Resource = statement.resource
+      }
+    ]
+  })
+}
+
+# Attach Custom Policy
+resource "aws_iam_role_policy_attachment" "custom_policy_attachment" {
+  role       = aws_iam_role.eks_cluster_role.name
+  policy_arn = aws_iam_policy.custom_policy.arn
+}
+
+
 # Variables
 variable "role_name" {
   description = "The name of the IAM role for EKS Cluster"
@@ -55,55 +107,4 @@ variable "custom_policy_statements" {
       resource = "*"
     }
   ]
-}
-
-# IAM Role for EKS Cluster
-resource "aws_iam_role" "eks_cluster_role" {
-  name               = var.role_name
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "eks.amazonaws.com"
-        }
-        Action = [
-          "sts:AssumeRole",
-          "sts:TagSession"
-        ]
-      }
-    ]
-  })
-
-  tags = var.tags
-}
-
-# Attach AWS Managed Policies
-resource "aws_iam_role_policy_attachment" "managed_policy_attachments" {
-  for_each = toset(var.aws_managed_policies)
-  role     = aws_iam_role.eks_cluster_role.name
-  policy_arn = each.value
-}
-
-# Create Custom Policy
-resource "aws_iam_policy" "custom_policy" {
-  name   = var.custom_policy_name
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      for statement in var.custom_policy_statements : {
-        Sid      = statement.sid
-        Effect   = statement.effect
-        Action   = statement.actions
-        Resource = statement.resource
-      }
-    ]
-  })
-}
-
-# Attach Custom Policy
-resource "aws_iam_role_policy_attachment" "custom_policy_attachment" {
-  role       = aws_iam_role.eks_cluster_role.name
-  policy_arn = aws_iam_policy.custom_policy.arn
 }
