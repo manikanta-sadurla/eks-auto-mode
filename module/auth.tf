@@ -67,31 +67,31 @@ locals {
 
 
 
-resource "aws_ec2_tag" "cluster_primary_security_group" {
-  for_each = { for k, v in merge(var.tags) :
-    k => v if local.create && k != "Name" && var.create_cluster_primary_security_group_tags
-  }
+# resource "aws_ec2_tag" "cluster_primary_security_group" {
+#   for_each = { for k, v in merge(var.tags) :
+#     k => v if local.create && k != "Name" && var.create_cluster_primary_security_group_tags
+#   }
 
-  resource_id = aws_eks_cluster.example.id  # Use the EKS cluster ID instead of security group ID
-  key         = each.key
-  value       = each.value
-}
+#   resource_id = aws_eks_cluster.example.id  # Use the EKS cluster ID instead of security group ID
+#   key         = each.key
+#   value       = each.value
+# }
 
 
-resource "aws_cloudwatch_log_group" "this" {
-  count = local.create && var.create_cloudwatch_log_group ? 1 : 0
+# resource "aws_cloudwatch_log_group" "this" {
+#   count = local.create && var.create_cloudwatch_log_group ? 1 : 0
 
-  name              = "/aws/eks/${var.cluster_name}/cluster"
-  retention_in_days = var.cloudwatch_log_group_retention_in_days
-  kms_key_id        = var.cloudwatch_log_group_kms_key_id
-  log_group_class   = var.cloudwatch_log_group_class
+#   name              = "/aws/eks/${var.cluster_name}/cluster"
+#   retention_in_days = var.cloudwatch_log_group_retention_in_days
+#   kms_key_id        = var.cloudwatch_log_group_kms_key_id
+#   log_group_class   = var.cloudwatch_log_group_class
 
-  tags = merge(
-    var.tags,
-    # var.cloudwatch_log_group_tags,
-    { Name = "/aws/eks/${var.cluster_name}/cluster" }
-  )
-}
+#   tags = merge(
+#     var.tags,
+#     # var.cloudwatch_log_group_tags,
+#     { Name = "/aws/eks/${var.cluster_name}/cluster" }
+#   )
+# }
 
 
 resource "aws_eks_access_entry" "this" {
