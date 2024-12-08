@@ -1,19 +1,19 @@
-# data "tls_certificate" "cluster" {
-#   count = local.enabled && var.oidc_provider_enabled ? 1 : 0
-#   url   = one(aws_eks_cluster.example[*].identity[0].oidc[0].issuer)
-# }
+data "tls_certificate" "cluster" {
+  count = local.enabled && var.oidc_provider_enabled ? 1 : 0
+  url   = one(aws_eks_cluster.example[*].identity[0].oidc[0].issuer)
+}
 
-# resource "aws_iam_openid_connect_provider" "default" {
-#   count = local.enabled && var.oidc_provider_enabled ? 1 : 0
-#   url   = one(aws_eks_cluster.example[*].identity[0].oidc[0].issuer)
-#   tags = {
-#     Environment = "poc"
-#     Project     = "play-hq"
-#   }
+resource "aws_iam_openid_connect_provider" "default" {
+  count = local.enabled && var.oidc_provider_enabled ? 1 : 0
+  url   = one(aws_eks_cluster.example[*].identity[0].oidc[0].issuer)
+  tags = {
+    Environment = "poc"
+    Project     = "play-hq"
+  }
 
-#   client_id_list  = ["sts.amazonaws.com"]
-#   thumbprint_list = [one(data.tls_certificate.cluster[*].certificates[0].sha1_fingerprint)]
-# }
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [one(data.tls_certificate.cluster[*].certificates[0].sha1_fingerprint)]
+}
 
 # resource "aws_eks_addon" "cluster" {
 #   for_each = local.enabled ? { for addon in var.addons : addon.addon_name => addon } : {}
@@ -44,19 +44,19 @@
 #   }
 # }
 
-# locals {
-#   enabled = true # Set to false if you don't want to create these resources
-# }
+locals {
+  enabled = true # Set to false if you don't want to create these resources
+}
 
-# variable "oidc_provider_enabled" {
-#   type    = bool
-#   default = true # Set to false if you don't want to create the OIDC provider
-# }
+variable "oidc_provider_enabled" {
+  type    = bool
+  default = true # Set to false if you don't want to create the OIDC provider
+}
 
-# variable "addons_depends_on" {
-#   type    = list(any)
-#   default = []
-# }
+variable "addons_depends_on" {
+  type    = list(any)
+  default = []
+}
 
 
 # variable "addons" {
