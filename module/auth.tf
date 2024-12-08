@@ -10,11 +10,10 @@ data "aws_iam_session_context" "current" {
 }
 
 locals {
-    create = true
+  create = true
 
-partition = data.aws_partition.current.partition
-  # This replaces the one-time logic from the EKS API with something that can be
-  # better controlled by users through Terraform
+  partition = data.aws_partition.current.partition
+
   bootstrap_cluster_creator_admin_permissions = {
     cluster_creator = {
       principal_arn = data.aws_iam_session_context.current.issuer_arn
@@ -22,7 +21,7 @@ partition = data.aws_partition.current.partition
 
       policy_associations = {
         admin = {
-          policy_arn = "arn:${local.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          policy_arn     = "arn:${local.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
           access_scope = {
             type = "cluster"
           }
@@ -31,14 +30,18 @@ partition = data.aws_partition.current.partition
     }
   }
 
-  # Merge the bootstrap behavior with the entries that users provide
-  merged_access_entries = merge(
-    { for k, v in local.bootstrap_cluster_creator_admin_permissions : k => v if var.enable_cluster_creator_admin_permissions },
-    var.access_entries,
-  )
+  # Convert access_entries list to a map
+  access_entries_map = {
+    for entry in var.access_entries : entry.principal_arn => entry
+  }
 
-  # Flatten out entries and policy associations so users can specify the policy
-  # associations within a single entry
+  # Merge the bootstrap permissions and the converted access_entries map
+  merged_access_entries = merge(
+    local.bootstrap_cluster_creator_admin_permissions,
+    local.access_entries_map
+  )
+  
+  # Flatten the merged access entries with the condition
   flattened_access_entries = flatten([
     for entry_key, entry_val in local.merged_access_entries : [
       for pol_key, pol_val in lookup(entry_val, "policy_associations", {}) :
@@ -48,15 +51,19 @@ partition = data.aws_partition.current.partition
           entry_key     = entry_key
           pol_key       = pol_key
         },
-        { for k, v in {
+        {
           association_policy_arn              = pol_val.policy_arn
           association_access_scope_type       = pol_val.access_scope.type
           association_access_scope_namespaces = lookup(pol_val.access_scope, "namespaces", [])
-        } : k => v if !contains(["EC2", "EC2_LINUX", "EC2_WINDOWS", "FARGATE_LINUX", "HYBRID_LINUX"], lookup(entry_val, "type", "STANDARD")) },
+        },
+        # Filtering out specific types as per your original condition
+        { for k, v in pol_val : k => v if !contains(["EC2", "EC2_LINUX", "EC2_WINDOWS", "FARGATE_LINUX", "HYBRID_LINUX"], lookup(entry_val, "type", "STANDARD")) }
       )
     ]
   ])
 }
+
+
 
 
 
@@ -121,69 +128,6 @@ resource "aws_eks_access_policy_association" "this" {
 
 ####################################################
 
-
-# variable "cluster_name" {
-#   description = "The name of the EKS Cluster"
-#   type        = string
-# }
-
-# variable "role_name" {
-#   description = "The name of the IAM role for EKS Cluster"
-#   default     = "eks-cluster-role-manikanta"
-# }
-
-# variable "tags" {
-#   description = "Tags to apply to resources"
-#   type        = map(string)
-#   default = {
-#     Environment = "dev"
-#     Name        = "eks-cluster-role-manikanta"
-#   }
-# }
-
-# variable "aws_managed_policies" {
-#   description = "List of AWS Managed Policies to attach to the IAM role"
-#   type        = list(string)
-#   default = [
-#     "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
-#     "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-#   ]
-# }
-
-# variable "custom_policy_name" {
-#   description = "Name of the custom IAM policy"
-#   default     = "arc-poc-cluster-ServiceRole-manikanta"
-# }
-
-# variable "custom_policy_statements" {
-#   description = "Custom policy statements"
-#   type = list(object({
-#     sid      = string
-#     effect   = string
-#     actions  = list(string)
-#     resource = string
-#   }))
-#   default = [
-#     {
-#       sid    = "AllowElasticLoadBalancer"
-#       effect = "Allow"
-#       actions = [
-#         "elasticloadbalancing:SetSubnets",
-#         "elasticloadbalancing:SetIpAddressType",
-#         "ec2:DescribeInternetGateways",
-#         "ec2:DescribeAddresses",
-#         "ec2:DescribeAccountAttributes"
-#       ]
-#       resource = "*"
-#     },
-#     {
-#       sid      = "DenyCreateLogGroup"
-#       effect   = "Deny"
-#       actions  = ["logs:CreateLogGroup"]
-#       resource = "*"
-#     }
-#   ]
-# }
 
 variable "enable_cluster_creator_admin_permissions" {
   description = "Flag to enable cluster creator admin permissions"
