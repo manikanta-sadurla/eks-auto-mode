@@ -29,7 +29,7 @@ resource "aws_eks_cluster" "example" {
 
   compute_config {
     enabled       = true
-    node_pools    = ["general-purpose"]
+    node_pools    = ["general-purpose", "system"]
     node_role_arn = aws_iam_role.eks_node_group_role.arn
   }
 
