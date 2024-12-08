@@ -68,3 +68,18 @@ aws_managed_policies = [
   "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
   "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
 ]
+
+################ IAM NODE #######################
+
+node_group_role_name = "prod-eks-node-group-role-manikanta"
+node_group_tags = {
+  Environment = "prod"
+  Name        = "prod-eks-node-group-role-manikanta"
+}
+
+node_group_custom_policy_name = "arc-poc-CNI_Policy-manikanta"
+
+node_group_managed_policies = [
+  "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+  "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+]
