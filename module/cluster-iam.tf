@@ -9,7 +9,7 @@ variable "tags" {
   type        = map(string)
   default     = {
     Environment = "dev"
-    Name        = "eks-cluster-role"
+    Name        = "eks-cluster-role-manikanta"
   }
 }
 

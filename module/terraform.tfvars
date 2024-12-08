@@ -50,3 +50,21 @@ user_definitions = [
     #   groups    = ["read-only"]
     # }
   ]
+
+
+
+############# IAM #####################
+
+role_name = "prod-eks-cluster-role-maniankta"
+
+tags = {
+  Environment = "prod"
+  Name        = "prod-eks-cluster-role-maniaknta"
+}
+
+custom_policy_name= "arc-poc-cluster-ServiceRole-manikanta"
+
+aws_managed_policies = [
+  "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+  "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+]
