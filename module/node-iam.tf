@@ -1,6 +1,6 @@
 # IAM Role for EKS Node Group
 resource "aws_iam_role" "eks_node_group_role" {
-  name               = var.node_group_role_name
+  name = var.node_group_role_name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -19,14 +19,14 @@ resource "aws_iam_role" "eks_node_group_role" {
 
 # Attach AWS Managed Policies
 resource "aws_iam_role_policy_attachment" "node_group_managed_policy_attachments" {
-  for_each = toset(var.node_group_managed_policies)
-  role     = aws_iam_role.eks_node_group_role.name
+  for_each   = toset(var.node_group_managed_policies)
+  role       = aws_iam_role.eks_node_group_role.name
   policy_arn = each.value
 }
 
 # Create Custom Policy for Node Group
 resource "aws_iam_policy" "node_group_custom_policy" {
-  name   = var.node_group_custom_policy_name
+  name = var.node_group_custom_policy_name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -55,7 +55,7 @@ variable "node_group_role_name" {
 variable "node_group_tags" {
   description = "Tags to apply to the Node Group IAM role"
   type        = map(string)
-  default     = {
+  default = {
     Environment = "dev"
     Name        = "eks-node-group-role"
   }
@@ -64,7 +64,7 @@ variable "node_group_tags" {
 variable "node_group_managed_policies" {
   description = "List of AWS Managed Policies to attach to the Node Group IAM role"
   type        = list(string)
-  default     = [
+  default = [
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   ]

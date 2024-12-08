@@ -1,6 +1,6 @@
 # IAM Role for EKS Cluster
 resource "aws_iam_role" "eks_cluster_role" {
-  name               = var.role_name
+  name = var.role_name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -22,14 +22,14 @@ resource "aws_iam_role" "eks_cluster_role" {
 
 # Attach AWS Managed Policies
 resource "aws_iam_role_policy_attachment" "managed_policy_attachments" {
-  for_each = toset(var.aws_managed_policies)
-  role     = aws_iam_role.eks_cluster_role.name
+  for_each   = toset(var.aws_managed_policies)
+  role       = aws_iam_role.eks_cluster_role.name
   policy_arn = each.value
 }
 
 # Create Custom Policy
 resource "aws_iam_policy" "custom_policy" {
-  name   = var.custom_policy_name
+  name = var.custom_policy_name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -59,7 +59,7 @@ variable "role_name" {
 variable "tags" {
   description = "Tags to apply to resources"
   type        = map(string)
-  default     = {
+  default = {
     Environment = "dev"
     Name        = "eks-cluster-role-manikanta"
   }
@@ -68,7 +68,7 @@ variable "tags" {
 variable "aws_managed_policies" {
   description = "List of AWS Managed Policies to attach to the IAM role"
   type        = list(string)
-  default     = [
+  default = [
     "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
     "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
   ]
@@ -89,9 +89,9 @@ variable "custom_policy_statements" {
   }))
   default = [
     {
-      sid      = "AllowElasticLoadBalancer"
-      effect   = "Allow"
-      actions  = [
+      sid    = "AllowElasticLoadBalancer"
+      effect = "Allow"
+      actions = [
         "elasticloadbalancing:SetSubnets",
         "elasticloadbalancing:SetIpAddressType",
         "ec2:DescribeInternetGateways",

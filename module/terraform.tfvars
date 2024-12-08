@@ -10,8 +10,8 @@ bootstrap_permissions = true
 
 
 # bootstrap_self_managed_addons = true
-enabled_cluster_log_types     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
-encryption_key_arn            = ""
+enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+encryption_key_arn        = ""
 
 #kubernetes_network_config 
 service_ipv4_cidr = "172.20.0.0/16"
@@ -41,15 +41,15 @@ public_access_cidrs = ["0.0.0.0/0"]
 
 
 user_definitions = [
-    {
-      user_name = "manikanta.sadurla"
-      groups    = ["system:masters"]
-    },
-    # {
-    #   user_name = "ReadOnlyRole"
-    #   groups    = ["read-only"]
-    # }
-  ]
+  {
+    user_name = "manikanta.sadurla"
+    groups    = ["system:masters"]
+  },
+  # {
+  #   user_name = "ReadOnlyRole"
+  #   groups    = ["read-only"]
+  # }
+]
 
 
 
@@ -62,7 +62,7 @@ tags = {
   Name        = "prod-eks-cluster-role-maniaknta"
 }
 
-custom_policy_name= "arc-poc-cluster-ServiceRole-manikanta"
+custom_policy_name = "arc-poc-cluster-ServiceRole-manikanta"
 
 aws_managed_policies = [
   "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
