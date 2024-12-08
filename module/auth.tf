@@ -1,156 +1,238 @@
+
+data "aws_partition" "current" {}
+
 locals {
-#   enabled = true  # Toggle this as needed to enable or disable resources
+    create = true
 
-  # Example access entry map, replace with actual values as needed
-  access_entry_map = {
-    # "arn:aws:iam::123456789012:user/user1" = {
-    #   kubernetes_groups = ["group1", "group2"]
-    #   type              = "STANDARD"
-    # },
-    # "arn:aws:iam::123456789012:user/user2" = {
-    #   kubernetes_groups = ["group3"]
-    #   type              = "STANDARD"
-    # }
-  }
+partition = data.aws_partition.current.partition
+  # This replaces the one-time logic from the EKS API with something that can be
+  # better controlled by users through Terraform
+  bootstrap_cluster_creator_admin_permissions = {
+    cluster_creator = {
+      principal_arn = data.aws_iam_session_context.current.issuer_arn
+      type          = "STANDARD"
 
-  # Example access policy association map, replace with actual values as needed
-  eks_access_policy_association_product_map = {
-    # "arn:aws:iam::123456789012:user/user1" = {
-    #   principal_arn = "arn:aws:iam::123456789012:user/user1"
-    #   policy_arn    = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-    #   access_scope  = {
-    #     type       = "ReadOnly"
-    #     namespaces = ["default"]
-    #   }
-    # }
-  }
-
-  # Policy abbreviation map for dynamic policy ARN selection
-  eks_policy_abbreviation_map = {
-    "AmazonEKSClusterPolicy" = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  }
-
-  # Define the EKS cluster ID, you can also use `aws_eks_cluster.example.id` if the cluster is created in this configuration
-  eks_cluster_id = aws_eks_cluster.example.id
-}
-
-#### auth.tf ## 
-
-resource "aws_eks_access_entry" "map" {
-  for_each = local.enabled ? local.access_entry_map : {}
-
-  cluster_name      = local.eks_cluster_id
-  principal_arn     = each.key
-  kubernetes_groups = each.value.kubernetes_groups
-  type              = each.value.type
-
-  tags = aws_eks_cluster.example.tags
-}
-
-resource "aws_eks_access_policy_association" "map" {
-  for_each = local.enabled ? local.eks_access_policy_association_product_map : {}
-
-  cluster_name  = local.eks_cluster_id
-  principal_arn = each.value.principal_arn
-  policy_arn    = each.value.policy_arn
-
-  access_scope {
-    type       = local.access_entry_map[each.value.principal_arn].access_policy_associations[each.value.policy_arn].access_scope.type
-    namespaces = local.access_entry_map[each.value.principal_arn].access_policy_associations[each.value.policy_arn].access_scope.namespaces
-  }
-}
-
-resource "aws_eks_access_entry" "standard" {
-  count = local.enabled ? length(var.access_entries) : 0
-
-  cluster_name      = local.eks_cluster_id
-  principal_arn     = var.access_entries[count.index].principal_arn
-  kubernetes_groups = var.access_entries[count.index].kubernetes_groups
-  type              = "STANDARD"
-
-  tags = aws_eks_cluster.example.tags
-}
-
-resource "aws_eks_access_entry" "linux" {
-  count = local.enabled ? length(lookup(var.access_entries_for_nodes, "EC2_LINUX", [])) : 0
-
-  cluster_name  = local.eks_cluster_id
-  principal_arn = var.access_entries_for_nodes["EC2_LINUX"][count.index]
-  type          = "EC2_LINUX"
-
-  tags = aws_eks_cluster.example.tags
-}
-
-resource "aws_eks_access_entry" "windows" {
-  count = local.enabled ? length(lookup(var.access_entries_for_nodes, "EC2_WINDOWS", [])) : 0
-
-  cluster_name  = local.eks_cluster_id
-  principal_arn = var.access_entries_for_nodes["EC2_WINDOWS"][count.index]
-  type          = "EC2_WINDOWS"
-
-  tags = aws_eks_cluster.example.tags
-}
-
-resource "aws_eks_access_policy_association" "list" {
-  count = local.enabled ? length(var.access_policy_associations) : 0
-
-  cluster_name  = local.eks_cluster_id
-  principal_arn = var.access_policy_associations[count.index].principal_arn
-  policy_arn = try(local.eks_policy_abbreviation_map[var.access_policy_associations[count.index].policy_arn], var.access_policy_associations[count.index].policy_arn)
-
-  access_scope {
-    type       = var.access_policy_associations[count.index].access_scope.type
-    namespaces = var.access_policy_associations[count.index].access_scope.namespaces
-  }
-}
-
-
-
-
-#### Variables.tf  ####
-
-
-variable "access_entries" {
-  description = "List of access entries to be created in EKS"
-  type = list(object({
-    principal_arn     = string
-    kubernetes_groups = list(string)
-  }))
-  default = [
-    {
-      principal_arn     = "arn:aws:iam::123456789012:user/user1"
-      kubernetes_groups = ["group1", "group2"]
-    }
-  ]
-}
-
-variable "access_entries_for_nodes" {
-  description = "Access entries for EC2 instances"
-  type = map(list(string))
-  default = {
-    EC2_LINUX  = ["arn:aws:iam::123456789012:instance-profile/EC2LinuxRole"]
-    EC2_WINDOWS = ["arn:aws:iam::123456789012:instance-profile/EC2WindowsRole"]
-  }
-}
-
-variable "access_policy_associations" {
-  description = "List of access policy associations to be linked to the EKS cluster"
-  type = list(object({
-    principal_arn = string
-    policy_arn    = string
-    access_scope  = object({
-      type       = string
-      namespaces = list(string)
-    })
-  }))
-  default = [
-    {
-      principal_arn = "arn:aws:iam::123456789012:user/user1"
-      policy_arn    = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-      access_scope  = {
-        type       = "ReadOnly"
-        namespaces = ["default"]
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:${local.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
       }
     }
+  }
+
+  # Merge the bootstrap behavior with the entries that users provide
+  merged_access_entries = merge(
+    { for k, v in local.bootstrap_cluster_creator_admin_permissions : k => v if var.enable_cluster_creator_admin_permissions },
+    var.access_entries,
+  )
+
+  # Flatten out entries and policy associations so users can specify the policy
+  # associations within a single entry
+  flattened_access_entries = flatten([
+    for entry_key, entry_val in local.merged_access_entries : [
+      for pol_key, pol_val in lookup(entry_val, "policy_associations", {}) :
+      merge(
+        {
+          principal_arn = entry_val.principal_arn
+          entry_key     = entry_key
+          pol_key       = pol_key
+        },
+        { for k, v in {
+          association_policy_arn              = pol_val.policy_arn
+          association_access_scope_type       = pol_val.access_scope.type
+          association_access_scope_namespaces = lookup(pol_val.access_scope, "namespaces", [])
+        } : k => v if !contains(["EC2", "EC2_LINUX", "EC2_WINDOWS", "FARGATE_LINUX", "HYBRID_LINUX"], lookup(entry_val, "type", "STANDARD")) },
+      )
+    ]
+  ])
+}
+
+
+
+resource "aws_ec2_tag" "cluster_primary_security_group" {
+  for_each = { for k, v in merge(var.tags) :
+    k => v if local.create && k != "Name" && var.create_cluster_primary_security_group_tags
+  }
+
+  resource_id = aws_eks_cluster.example.id  # Use the EKS cluster ID instead of security group ID
+  key         = each.key
+  value       = each.value
+}
+
+
+resource "aws_cloudwatch_log_group" "this" {
+  count = local.create && var.create_cloudwatch_log_group ? 1 : 0
+
+  name              = "/aws/eks/${var.cluster_name}/cluster"
+  retention_in_days = var.cloudwatch_log_group_retention_in_days
+  kms_key_id        = var.cloudwatch_log_group_kms_key_id
+  log_group_class   = var.cloudwatch_log_group_class
+
+  tags = merge(
+    var.tags,
+    # var.cloudwatch_log_group_tags,
+    { Name = "/aws/eks/${var.cluster_name}/cluster" }
+  )
+}
+
+
+resource "aws_eks_access_entry" "this" {
+  for_each = { for k, v in local.merged_access_entries : k => v if local.create }
+
+  cluster_name      = aws_eks_cluster.example.id
+  kubernetes_groups = try(each.value.kubernetes_groups, null)
+  principal_arn     = each.value.principal_arn
+  type              = try(each.value.type, "STANDARD")
+  user_name         = try(each.value.user_name, null)
+
+  tags = merge(var.tags, try(each.value.tags, {}))
+}
+
+
+resource "aws_eks_access_policy_association" "this" {
+  for_each = { for k, v in local.flattened_access_entries : "${v.entry_key}_${v.pol_key}" => v if local.create }
+
+  access_scope {
+    namespaces = try(each.value.association_access_scope_namespaces, [])
+    type       = each.value.association_access_scope_type
+  }
+
+  cluster_name = aws_eks_cluster.example.id
+
+  policy_arn    = each.value.association_policy_arn
+  principal_arn = each.value.principal_arn
+
+  depends_on = [
+    aws_eks_access_entry.this,
   ]
+}
+
+
+####################################################
+
+
+variable "cluster_name" {
+  description = "The name of the EKS Cluster"
+  type        = string
+}
+
+variable "role_name" {
+  description = "The name of the IAM role for EKS Cluster"
+  default     = "eks-cluster-role-manikanta"
+}
+
+variable "tags" {
+  description = "Tags to apply to resources"
+  type        = map(string)
+  default = {
+    Environment = "dev"
+    Name        = "eks-cluster-role-manikanta"
+  }
+}
+
+variable "aws_managed_policies" {
+  description = "List of AWS Managed Policies to attach to the IAM role"
+  type        = list(string)
+  default = [
+    "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+    "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+  ]
+}
+
+variable "custom_policy_name" {
+  description = "Name of the custom IAM policy"
+  default     = "arc-poc-cluster-ServiceRole-manikanta"
+}
+
+variable "custom_policy_statements" {
+  description = "Custom policy statements"
+  type = list(object({
+    sid      = string
+    effect   = string
+    actions  = list(string)
+    resource = string
+  }))
+  default = [
+    {
+      sid    = "AllowElasticLoadBalancer"
+      effect = "Allow"
+      actions = [
+        "elasticloadbalancing:SetSubnets",
+        "elasticloadbalancing:SetIpAddressType",
+        "ec2:DescribeInternetGateways",
+        "ec2:DescribeAddresses",
+        "ec2:DescribeAccountAttributes"
+      ]
+      resource = "*"
+    },
+    {
+      sid      = "DenyCreateLogGroup"
+      effect   = "Deny"
+      actions  = ["logs:CreateLogGroup"]
+      resource = "*"
+    }
+  ]
+}
+
+variable "enable_cluster_creator_admin_permissions" {
+  description = "Flag to enable cluster creator admin permissions"
+  type        = bool
+  default     = true
+}
+
+variable "access_entries" {
+  description = "Custom access entries for the EKS cluster"
+  type = list(object({
+    principal_arn     = string
+    type              = string
+    kubernetes_groups = list(string)
+    user_name         = string
+    tags              = map(string)
+  }))
+  default = []
+}
+
+variable "create_cluster_primary_security_group_tags" {
+  description = "Flag to create tags for the primary security group"
+  type        = bool
+  default     = true
+}
+
+variable "create_cloudwatch_log_group" {
+  description = "Flag to create CloudWatch log group"
+  type        = bool
+  default     = true
+}
+
+variable "cloudwatch_log_group_retention_in_days" {
+  description = "Retention period for CloudWatch log group"
+  type        = number
+  default     = 7
+}
+
+variable "cloudwatch_log_group_kms_key_id" {
+  description = "KMS Key ID for CloudWatch log group"
+  type        = string
+  default     = ""
+}
+
+variable "cloudwatch_log_group_class" {
+  description = "Log group class"
+  type        = string
+  default     = "STANDARD"
+}
+
+variable "create" {
+  description = "Flag to enable resource creation"
+  type        = bool
+  default     = true
+}
+
+variable "partition" {
+  description = "AWS partition (e.g., aws, aws-us-gov, aws-cn)"
+  type        = string
+  default     = "aws"
 }
