@@ -94,17 +94,17 @@ locals {
 # }
 
 
-resource "aws_eks_access_entry" "this" {
-  for_each = { for k, v in local.merged_access_entries : k => v if local.create }
+# resource "aws_eks_access_entry" "this" {
+#   for_each = { for k, v in local.merged_access_entries : k => v if local.create }
 
-  cluster_name      = aws_eks_cluster.example.id
-  kubernetes_groups = try(each.value.kubernetes_groups, null)
-  principal_arn     = each.value.principal_arn
-  type              = try(each.value.type, "STANDARD")
-  user_name         = try(each.value.user_name, null)
+#   cluster_name      = aws_eks_cluster.example.id
+#   kubernetes_groups = try(each.value.kubernetes_groups, null)
+#   principal_arn     = each.value.principal_arn
+#   type              = try(each.value.type, "STANDARD")
+#   user_name         = try(each.value.user_name, null)
 
-  tags = merge(var.tags, try(each.value.tags, {}))
-}
+#   tags = merge(var.tags, try(each.value.tags, {}))
+# }
 
 
 resource "aws_eks_access_policy_association" "this" {
@@ -120,9 +120,9 @@ resource "aws_eks_access_policy_association" "this" {
   policy_arn    = each.value.association_policy_arn
   principal_arn = each.value.principal_arn
 
-  depends_on = [
-    aws_eks_access_entry.this,
-  ]
+#   depends_on = [
+#     aws_eks_access_entry.this,
+#   ]
 }
 
 
