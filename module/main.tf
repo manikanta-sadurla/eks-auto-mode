@@ -10,14 +10,12 @@ resource "aws_eks_cluster" "example" {
     endpoint_private_access = var.endpoint_private_access
     public_access_cidrs     = var.public_access_cidrs
   }
-
   access_config {
     authentication_mode                         = var.authentication_mode
     bootstrap_cluster_creator_admin_permissions = var.bootstrap_permissions
   }
 
-
-### EKS Auto Mode ###
+  ### EKS Auto Mode ###
 
 ### When using EKS Auto Mode compute_config.enabled, kubernetes_network_config.elastic_load_balancing.enabled, 
 ## and storage_config.block_storage.enabled must *ALL be set to true. 
@@ -25,9 +23,9 @@ resource "aws_eks_cluster" "example" {
   
   bootstrap_self_managed_addons = false # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
 
-    compute_config {
+   compute_config {
     enabled       = true
-    node_pools    = []
+    node_pools    = [general-purpose]
     node_role_arn = aws_iam_role.eks_node_group_role.arn
   }
 
@@ -37,6 +35,7 @@ resource "aws_eks_cluster" "example" {
     }
   }
 
+  # Storage Config
   storage_config {
     block_storage {
       enabled = true
@@ -56,8 +55,7 @@ resource "aws_eks_cluster" "example" {
       resources = ["secrets"]
     }
   }
-
-  # Conditional Kubernetes Network Config
+    # Conditional Kubernetes Network Config
   # dynamic "kubernetes_network_config" {
   #   for_each = var.service_ipv4_cidr != "" ? [1] : []
   #   content {
@@ -78,9 +76,7 @@ resource "aws_eks_cluster" "example" {
     }
   }
 
-
   version = var.kubernetes_version
 
   tags = merge(var.default_tags, var.resource_tags)
 }
-
