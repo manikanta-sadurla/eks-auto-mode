@@ -1,20 +1,20 @@
 resource "aws_iam_role" "eks_cluster_role" {
   name = "EKSClusterRole"
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "eks.amazonaws.com"
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "eks.amazonaws.com"
+            },
+            "Action": [
+                "sts:AssumeRole",
+                "sts:TagSession"
+            ]
         }
-        Action = [
-          "sts:AssumeRole",
-          "sts:TagSession"
-        ]
-      }
     ]
-  })
+})
 }
 
 # Attach AWS Managed Policies for EKS Cluster Role
