@@ -114,68 +114,68 @@ resource "aws_eks_access_policy_association" "this" {
 ####################################################
 
 
-variable "cluster_name" {
-  description = "The name of the EKS Cluster"
-  type        = string
-}
+# variable "cluster_name" {
+#   description = "The name of the EKS Cluster"
+#   type        = string
+# }
 
-variable "role_name" {
-  description = "The name of the IAM role for EKS Cluster"
-  default     = "eks-cluster-role-manikanta"
-}
+# variable "role_name" {
+#   description = "The name of the IAM role for EKS Cluster"
+#   default     = "eks-cluster-role-manikanta"
+# }
 
-variable "tags" {
-  description = "Tags to apply to resources"
-  type        = map(string)
-  default = {
-    Environment = "dev"
-    Name        = "eks-cluster-role-manikanta"
-  }
-}
+# variable "tags" {
+#   description = "Tags to apply to resources"
+#   type        = map(string)
+#   default = {
+#     Environment = "dev"
+#     Name        = "eks-cluster-role-manikanta"
+#   }
+# }
 
-variable "aws_managed_policies" {
-  description = "List of AWS Managed Policies to attach to the IAM role"
-  type        = list(string)
-  default = [
-    "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
-    "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  ]
-}
+# variable "aws_managed_policies" {
+#   description = "List of AWS Managed Policies to attach to the IAM role"
+#   type        = list(string)
+#   default = [
+#     "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+#     "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+#   ]
+# }
 
-variable "custom_policy_name" {
-  description = "Name of the custom IAM policy"
-  default     = "arc-poc-cluster-ServiceRole-manikanta"
-}
+# variable "custom_policy_name" {
+#   description = "Name of the custom IAM policy"
+#   default     = "arc-poc-cluster-ServiceRole-manikanta"
+# }
 
-variable "custom_policy_statements" {
-  description = "Custom policy statements"
-  type = list(object({
-    sid      = string
-    effect   = string
-    actions  = list(string)
-    resource = string
-  }))
-  default = [
-    {
-      sid    = "AllowElasticLoadBalancer"
-      effect = "Allow"
-      actions = [
-        "elasticloadbalancing:SetSubnets",
-        "elasticloadbalancing:SetIpAddressType",
-        "ec2:DescribeInternetGateways",
-        "ec2:DescribeAddresses",
-        "ec2:DescribeAccountAttributes"
-      ]
-      resource = "*"
-    },
-    {
-      sid      = "DenyCreateLogGroup"
-      effect   = "Deny"
-      actions  = ["logs:CreateLogGroup"]
-      resource = "*"
-    }
-  ]
-}
+# variable "custom_policy_statements" {
+#   description = "Custom policy statements"
+#   type = list(object({
+#     sid      = string
+#     effect   = string
+#     actions  = list(string)
+#     resource = string
+#   }))
+#   default = [
+#     {
+#       sid    = "AllowElasticLoadBalancer"
+#       effect = "Allow"
+#       actions = [
+#         "elasticloadbalancing:SetSubnets",
+#         "elasticloadbalancing:SetIpAddressType",
+#         "ec2:DescribeInternetGateways",
+#         "ec2:DescribeAddresses",
+#         "ec2:DescribeAccountAttributes"
+#       ]
+#       resource = "*"
+#     },
+#     {
+#       sid      = "DenyCreateLogGroup"
+#       effect   = "Deny"
+#       actions  = ["logs:CreateLogGroup"]
+#       resource = "*"
+#     }
+#   ]
+# }
 
 variable "enable_cluster_creator_admin_permissions" {
   description = "Flag to enable cluster creator admin permissions"
