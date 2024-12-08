@@ -85,5 +85,8 @@ node_group_custom_policy_name = "arc-poc-CNI_Policy-manikanta"
 
 node_group_managed_policies = [
   "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+  "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+  "arn:aws:iam::aws:policy/AmazonSSMPatchAssociation",
+  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
 ]
