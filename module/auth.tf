@@ -1,5 +1,5 @@
 locals {
-  enabled = true  # Toggle this as needed to enable or disable resources
+#   enabled = true  # Toggle this as needed to enable or disable resources
 
   # Example access entry map, replace with actual values as needed
   access_entry_map = {
