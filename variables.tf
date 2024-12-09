@@ -34,7 +34,7 @@ variable "kubernetes_version" {
   description = "Desired Kubernetes master version. If you do not specify a value, the latest available version is used"
   type        = string
 
-  default = "1.29"
+  default = "1.31"
 }
 
 variable "local_exec_interpreter" {
