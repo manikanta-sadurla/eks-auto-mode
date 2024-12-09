@@ -70,7 +70,7 @@ resource "aws_eks_cluster" "example" {
   
 
   # Bootstrap Self-Managed Addons
-bootstrap_self_managed_addons = var.eks_auto_mode ? false : true
+bootstrap_self_managed_addons = var.eks_auto_mode ? true  : false
 
 # Conditional Compute Config
 dynamic "compute_config" {
