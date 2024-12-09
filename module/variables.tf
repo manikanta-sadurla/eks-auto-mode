@@ -90,11 +90,11 @@ variable "outpost_arns" {
   type        = list(string)
 }
 
-variable "zonal_shift_enabled" {
-  description = "Enable zonal shift for the cluster."
-  type        = bool
-  default     = false
-}
+# variable "zonal_shift_enabled" {
+#   description = "Enable zonal shift for the cluster."
+#   type        = bool
+#   default     = false
+# }
 
 variable "bootstrap_self_managed_addons" {
   description = "Install default unmanaged add-ons during cluster creation."
