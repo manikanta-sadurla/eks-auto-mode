@@ -4,11 +4,8 @@ variable "cluster_name" {
   type        = string
 }
 
-# variable "role_arn" {
-#   description = "IAM Role ARN for EKS control plane API access."
-#   type        = string
-# }
 
+## VPC Config Variable ## 
 variable "subnet_ids" {
   description = "List of subnet IDs for EKS cross-account elastic network interfaces."
   type        = list(string)
@@ -37,6 +34,7 @@ variable "public_access_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
+## Log Type Variable ##
 variable "enabled_cluster_log_types" {
   description = "Control plane logs to enable."
   type        = list(string)
@@ -48,16 +46,16 @@ variable "encryption_key_arn" {
   type        = string
 }
 
-variable "service_ipv4_cidr" {
-  description = "CIDR block for Kubernetes service IPs."
-  type        = string
-}
+# variable "service_ipv4_cidr" {
+#   description = "CIDR block for Kubernetes service IPs."
+#   type        = string
+# }
 
-variable "ip_family" {
-  description = "IP family for Kubernetes service addresses."
-  type        = string
-  default     = "ipv4"
-}
+# variable "ip_family" {
+#   description = "IP family for Kubernetes service addresses."
+#   type        = string
+#   default     = "ipv4"
+# }
 
 variable "authentication_mode" {
   description = "Authentication mode for the cluster."
@@ -120,4 +118,75 @@ variable "resource_tags" {
   description = "Additional resource-specific tags."
   type        = map(string)
   default     = {}
+}
+
+### kubernetes_network_config Variables ###
+variable "kubernetes_network_config_enabled" {
+  description = "Whether to enable Kubernetes network configuration block."
+  type        = bool
+  default     = false
+}
+
+variable "elastic_load_balancing_enabled" {
+  description = "Enable or disable Elastic Load Balancing for the cluster."
+  type        = bool
+  default     = false
+}
+
+variable "service_ipv4_cidr" {
+  description = "The CIDR block to assign Kubernetes pod and service IP addresses from."
+  type        = string
+  default     = ""
+}
+
+variable "ip_family" {
+  description = "The IP family used to assign Kubernetes pod and service addresses."
+  type        = string
+  default     = "ipv4"
+}
+##### Compute config variables ###
+variable "compute_config_enabled" {
+  description = "Whether to enable the compute configuration block."
+  type        = bool
+  default     = false
+}
+
+variable "compute_enabled" {
+  description = "Enable or disable the compute capability for the EKS Auto Mode cluster."
+  type        = bool
+  default     = false
+}
+
+variable "node_pools" {
+  description = "List of node pools for the compute configuration. Valid options are general-purpose and system."
+  type        = list(string)
+  default     = ["general-purpose", "system"]
+}
+
+### Remote Network Variables ###
+
+variable "remote_network_config_enabled" {
+  description = "Whether to enable the remote network configuration block."
+  type        = bool
+  default     = false
+}
+
+variable "remote_node_networks_cidrs" {
+  description = "List of CIDRs for remote node networks that can contain hybrid nodes."
+  type        = list(string)
+  default     = []
+}
+
+variable "remote_pod_networks_cidrs" {
+  description = "List of CIDRs for remote pod networks that can contain pods running Kubernetes webhooks on hybrid nodes."
+  type        = list(string)
+  default     = []
+}
+
+##### Zonal Shift Variables ##
+
+variable "zonal_shift_enabled" {
+  description = "Whether zonal shift is enabled for the cluster."
+  type        = bool
+  default     = false
 }

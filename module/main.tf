@@ -2,6 +2,7 @@ resource "aws_eks_cluster" "example" {
   # Required Arguments
   name     = var.cluster_name
   role_arn = aws_iam_role.eks_cluster_role.arn
+  version = var.kubernetes_version
 
   vpc_config {
     subnet_ids              = var.subnet_ids
@@ -27,17 +28,50 @@ resource "aws_eks_cluster" "example" {
 
   bootstrap_self_managed_addons = false # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
 
-  compute_config {
-    enabled       = true
-    node_pools    = ["general-purpose", "system"]
+  # compute_config {
+  #   enabled       = true
+  #   node_pools    = ["general-purpose", "system"]
+  #   node_role_arn = aws_iam_role.eks_node_group_role.arn
+  # }
+
+# Conditional Compute Config
+dynamic "compute_config" {
+  for_each = var.compute_config_enabled ? [1] : []
+  content {
+    # Enable or Disable Compute Capability
+    enabled = var.compute_enabled
+
+    # Node Pools Configuration
+    node_pools = var.node_pools != [] ? var.node_pools : ["general-purpose", "system"]
+
+    # Node Role ARN
     node_role_arn = aws_iam_role.eks_node_group_role.arn
   }
+}
 
-  kubernetes_network_config {
+  # kubernetes_network_config {
+  #   elastic_load_balancing {
+  #     enabled = true
+  #   }
+  # }
+
+  # Conditional Kubernetes Network Config
+dynamic "kubernetes_network_config" {
+  for_each = var.kubernetes_network_config_enabled ? [1] : []
+  content {
+    # Elastic Load Balancing Configuration
     elastic_load_balancing {
-      enabled = true
+      enabled = var.elastic_load_balancing_enabled
     }
+
+    # Service IPv4 CIDR
+    service_ipv4_cidr = var.service_ipv4_cidr != "" ? var.service_ipv4_cidr : null
+
+    # IP Family
+    ip_family = var.ip_family != "" ? var.ip_family : "ipv4"
   }
+}
+
 
   # Storage Config
   storage_config {
@@ -80,7 +114,36 @@ resource "aws_eks_cluster" "example" {
     }
   }
 
-  version = var.kubernetes_version
+
+# Conditional Remote Network Config
+dynamic "remote_network_config" {
+  for_each = var.remote_network_config_enabled ? [1] : []
+  content {
+    # Remote Node Networks Configuration
+    dynamic "remote_node_networks" {
+      for_each = length(var.remote_node_networks_cidrs) > 0 ? [1] : []
+      content {
+        cidrs = var.remote_node_networks_cidrs
+      }
+    }
+
+    # Remote Pod Networks Configuration
+    dynamic "remote_pod_networks" {
+      for_each = length(var.remote_pod_networks_cidrs) > 0 ? [1] : []
+      content {
+        cidrs = var.remote_pod_networks_cidrs
+      }
+    }
+  }
+}
+
+## Zonal shift config ##
+
+zonal_shift_config {
+  enabled = var.zonal_shift_enabled
+}
+
+
 
   tags = merge(var.default_tags, var.resource_tags)
 }
