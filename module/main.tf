@@ -30,7 +30,8 @@ resource "aws_eks_cluster" "example" {
 
   # Conditional Compute Config
   dynamic "compute_config" {
-    for_each = var.compute_config_enabled ? [1] : []
+    # for_each = var.compute_config_enabled ? [1] : []
+    for_each = var.eks_auto_mode ? [1] : []
     content {
       # Enable or Disable Compute Capability
       # enabled = var.compute_enabled
