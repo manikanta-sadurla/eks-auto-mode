@@ -15,9 +15,12 @@ resource "aws_launch_template" "eks_node_launch_template" {
 
   tag_specifications {
     resource_type = "instance"
-    tags = merge(var.tags, {
+    # tags = merge(var.tags, {
+    #   "LaunchTemplate" = "true"
+    # })
+    tags = {
       "LaunchTemplate" = "true"
-    })
+    }
   }
 
   lifecycle {
