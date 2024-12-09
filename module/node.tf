@@ -59,14 +59,14 @@ variable "source_security_group_ids" {
   default     = [] # Optional, leave empty if not required
 }
 
-variable "tags" {
-  description = "Tags to apply to the launch template."
-  type        = map(string)
-  default     = {
-    "Environment" = "Production"
-    "Team"        = "DevOps"
-  }
-}
+# variable "tags" {
+#   description = "Tags to apply to the launch template."
+#   type        = map(string)
+#   default     = {
+#     "Environment" = "Production"
+#     "Team"        = "DevOps"
+#   }
+# }
 
 # EKS Node Group
 resource "aws_eks_node_group" "eks_node_group" {
