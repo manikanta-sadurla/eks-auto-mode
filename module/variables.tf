@@ -148,7 +148,7 @@ variable "ip_family" {
 variable "compute_config_enabled" {
   description = "Whether to enable the compute configuration block."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "compute_enabled" {
