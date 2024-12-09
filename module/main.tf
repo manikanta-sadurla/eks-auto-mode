@@ -33,7 +33,7 @@ resource "aws_eks_cluster" "example" {
     content {
       # Enable or Disable Compute Capability
       # enabled = var.compute_enabled
-      enabled = false
+      enabled = var.eks_auto_mode ## set to true for eks AUto mode
 
       # # Node Pools Configuration
       # node_pools = var.node_pools != [] ? var.node_pools : ["general-purpose", "system"]
@@ -52,7 +52,7 @@ resource "aws_eks_cluster" "example" {
       # Elastic Load Balancing Configuration
       elastic_load_balancing {
         # enabled = var.elastic_load_balancing_enabled
-        enabled = false
+        enabled = var.eks_auto_mode ## set to true for eks AUto mode
       }
 
       # Service IPv4 CIDR
@@ -68,7 +68,7 @@ resource "aws_eks_cluster" "example" {
   storage_config {
     block_storage {
       # enabled = true
-      enabled = false
+      enabled = var.eks_auto_mode ## set to true for eks AUto mode
     }
   }
 
