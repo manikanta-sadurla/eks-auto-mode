@@ -5,7 +5,7 @@ resource "aws_launch_template" "eks_node_launch_template" {
   # version_description = "v1"
   image_id      = var.ami_type == "AL2_x86_64" ? data.aws_ssm_parameter.eks_ami_release_version.value : var.custom_ami_id
 
-  instance_type = join(",", var.instance_types)
+  # instance_type = join(",", var.instance_types)
 
   key_name = var.ec2_ssh_key != "" ? var.ec2_ssh_key : null
 
