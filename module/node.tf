@@ -1,45 +1,67 @@
 # Launch Template for EKS Node Group
+# Launch Template Configuration
 resource "aws_launch_template" "eks_node_launch_template" {
-  name_prefix = "eks-node-launch-template"
+  name_prefix   = "eks-node-group-"
+  # version_description = "v1"
+  image_id      = var.ami_type == "AL2_x86_64" ? data.aws_ssm_parameter.eks_ami_release_version.value : var.custom_ami_id
 
-  ebs_optimized = true
+  instance_type = join(",", var.instance_types)
 
-  dynamic "block_device_mappings" {
-    for_each = var.launch_template_block_device_mappings
-    content {
-      device_name  = block_device_mappings.key
-      no_device    = block_device_mappings.value.no_device
-      virtual_name = block_device_mappings.value.virtual_name
+  key_name = var.ec2_ssh_key != "" ? var.ec2_ssh_key : null
 
-      dynamic "ebs" {
-        for_each = block_device_mappings.value.ebs == null ? [] : [block_device_mappings.value.ebs]
-        content {
-          delete_on_termination = ebs.value.delete_on_termination
-          encrypted             = ebs.value.encrypted
-          iops                  = ebs.value.iops
-          kms_key_id            = ebs.value.kms_key_id
-          snapshot_id           = ebs.value.snapshot_id
-          throughput            = ebs.value.throughput
-          volume_size           = ebs.value.volume_size
-          volume_type           = ebs.value.volume_type
-        }
-      }
-    }
+  security_group_names = length(var.source_security_group_ids) > 0 ? var.source_security_group_ids : null
+
+  user_data = base64encode(data.template_file.eks_userdata.rendered)
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = merge(var.tags, {
+      "LaunchTemplate" = "true"
+    })
   }
 
-  # image_id = var.image_id
-  # image_id = local.ami_id
+  lifecycle {
+    create_before_destroy = true
+  }
+}
 
-  # image_id = data.aws_ami.amazon_linux.id
-  image_id = data.aws_ssm_parameter.eks_ami_release_version.value
-  # key_name = var.key_name
 
-  dynamic "tag_specifications" {
-    for_each = var.launch_template_tag_specifications
-    content {
-      resource_type = tag_specifications.value
-      #   tags          = var.node_tags
-    }
+# Define launch template variables
+variable "instance_types" {
+  description = "List of EC2 instance types for the EKS node group."
+  type        = list(string)
+  default     = ["t3.medium"]
+}
+
+variable "custom_ami_id" {
+  description = "Custom AMI ID for the EKS node group when ami_type is set to CUSTOM."
+  type        = string
+  default     = "" # You can leave it empty or set it to a specific AMI ID
+}
+variable "ami_type" {
+  description = "AMI type for the EKS node group."
+  type        = string
+  default     = "AL2_x86_64"
+}
+
+variable "ec2_ssh_key" {
+  description = "EC2 SSH key name for remote access."
+  type        = string
+  default     = "" # Optional, leave empty if no SSH key is required
+}
+
+variable "source_security_group_ids" {
+  description = "List of security group IDs for SSH access."
+  type        = list(string)
+  default     = [] # Optional, leave empty if not required
+}
+
+variable "tags" {
+  description = "Tags to apply to the launch template."
+  type        = map(string)
+  default     = {
+    "Environment" = "Production"
+    "Team"        = "DevOps"
   }
 }
 
@@ -85,11 +107,6 @@ resource "aws_eks_node_group" "eks_node_group" {
   }
 
   # depends_on = [ aws_iam_role_policy_attachment.eks_node_group_cni_policy,
-  #                aws_iam_role_policy_attachment.eks_node_group_worker_policy,
-  #                aws_iam_role_policy_attachment.eks_node_group_registry_policy,
-  #                aws_iam_role_policy_attachment.eks_node_group_registry_policy,
-  #               #  aws_iam_role_policy_attachment.ssm_path,
-  #               #  aws_iam_role_policy_attachment.ssm_managed,
   #                ]
 }
 
@@ -151,3 +168,48 @@ variable "launch_template_tag_specifications" {
   }))
   default = []
 }
+
+
+# resource "aws_launch_template" "eks_node_launch_template" {
+#   name_prefix = "eks-node-launch-template"
+
+#   ebs_optimized = true
+
+#   dynamic "block_device_mappings" {
+#     for_each = var.launch_template_block_device_mappings
+#     content {
+#       device_name  = block_device_mappings.key
+#       no_device    = block_device_mappings.value.no_device
+#       virtual_name = block_device_mappings.value.virtual_name
+
+#       dynamic "ebs" {
+#         for_each = block_device_mappings.value.ebs == null ? [] : [block_device_mappings.value.ebs]
+#         content {
+#           delete_on_termination = ebs.value.delete_on_termination
+#           encrypted             = ebs.value.encrypted
+#           iops                  = ebs.value.iops
+#           kms_key_id            = ebs.value.kms_key_id
+#           snapshot_id           = ebs.value.snapshot_id
+#           throughput            = ebs.value.throughput
+#           volume_size           = ebs.value.volume_size
+#           volume_type           = ebs.value.volume_type
+#         }
+#       }
+#     }
+#   }
+
+#   # image_id = var.image_id
+#   # image_id = local.ami_id
+
+#   # image_id = data.aws_ami.amazon_linux.id
+#   image_id = data.aws_ssm_parameter.eks_ami_release_version.value
+#   # key_name = var.key_name
+
+#   dynamic "tag_specifications" {
+#     for_each = var.launch_template_tag_specifications
+#     content {
+#       resource_type = tag_specifications.value
+#       #   tags          = var.node_tags
+#     }
+#   }
+# }
