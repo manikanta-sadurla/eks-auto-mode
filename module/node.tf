@@ -1,99 +1,47 @@
-# # IAM role for the EKS node group
-# resource "aws_iam_role" "eks_node_group_role" {
-#   name = "eks-node-group-role"
-
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Action = "sts:AssumeRole"
-#         Effect = "Allow"
-#         Principal = {
-#           Service = "ec2.amazonaws.com"
-#         }
-#       }
-#     ]
-#   })
-# }
-
-# # Attach required IAM policies to the role
-# resource "aws_iam_role_policy_attachment" "eks_node_group_worker_policy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-#   role       = aws_iam_role.eks_node_group_role.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "eks_node_group_cni_policy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-#   role       = aws_iam_role.eks_node_group_role.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "eks_node_group_registry_policy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-#   role       = aws_iam_role.eks_node_group_role.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "ssm_path" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMPatchAssociation"
-#   role       = aws_iam_role.eks_node_group_role.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "ssm_managed" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-#   role       = aws_iam_role.eks_node_group_role.name
-# }
-
-# resource "aws_iam_role_policy_attachment" "eks_node_group_registry_policy" {
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-#   role       = aws_iam_role.eks_node_group_role.name
-# }
-
-
-
-
 # Launch Template for EKS Node Group
-# resource "aws_launch_template" "eks_node_launch_template" {
-#   name_prefix = "eks-node-launch-template"
+resource "aws_launch_template" "eks_node_launch_template" {
+  name_prefix = "eks-node-launch-template"
 
-#   ebs_optimized = true
+  ebs_optimized = true
 
-#   dynamic "block_device_mappings" {
-#     for_each = var.launch_template_block_device_mappings
-#     content {
-#       device_name  = block_device_mappings.key
-#       no_device    = block_device_mappings.value.no_device
-#       virtual_name = block_device_mappings.value.virtual_name
+  dynamic "block_device_mappings" {
+    for_each = var.launch_template_block_device_mappings
+    content {
+      device_name  = block_device_mappings.key
+      no_device    = block_device_mappings.value.no_device
+      virtual_name = block_device_mappings.value.virtual_name
 
-#       dynamic "ebs" {
-#         for_each = block_device_mappings.value.ebs == null ? [] : [block_device_mappings.value.ebs]
-#         content {
-#           delete_on_termination = ebs.value.delete_on_termination
-#           encrypted             = ebs.value.encrypted
-#           iops                  = ebs.value.iops
-#           kms_key_id            = ebs.value.kms_key_id
-#           snapshot_id           = ebs.value.snapshot_id
-#           throughput            = ebs.value.throughput
-#           volume_size           = ebs.value.volume_size
-#           volume_type           = ebs.value.volume_type
-#         }
-#       }
-#     }
-#   }
+      dynamic "ebs" {
+        for_each = block_device_mappings.value.ebs == null ? [] : [block_device_mappings.value.ebs]
+        content {
+          delete_on_termination = ebs.value.delete_on_termination
+          encrypted             = ebs.value.encrypted
+          iops                  = ebs.value.iops
+          kms_key_id            = ebs.value.kms_key_id
+          snapshot_id           = ebs.value.snapshot_id
+          throughput            = ebs.value.throughput
+          volume_size           = ebs.value.volume_size
+          volume_type           = ebs.value.volume_type
+        }
+      }
+    }
+  }
 
-#   # image_id = var.image_id
-#   # image_id = local.ami_id
+  # image_id = var.image_id
+  # image_id = local.ami_id
 
-#   # image_id = data.aws_ami.amazon_linux.id
-#   image_id = data.aws_ssm_parameter.eks_ami_release_version.value
-#   key_name = var.key_name
+  # image_id = data.aws_ami.amazon_linux.id
+  image_id = data.aws_ssm_parameter.eks_ami_release_version.value
+  # key_name = var.key_name
 
-#   dynamic "tag_specifications" {
-#     for_each = var.launch_template_tag_specifications
-#     content {
-#       resource_type = tag_specifications.value
-#       #   tags          = var.node_tags
-#     }
-#   }
-# }
+  dynamic "tag_specifications" {
+    for_each = var.launch_template_tag_specifications
+    content {
+      resource_type = tag_specifications.value
+      #   tags          = var.node_tags
+    }
+  }
+}
 
 # EKS Node Group
 resource "aws_eks_node_group" "eks_node_group" {
@@ -121,10 +69,10 @@ resource "aws_eks_node_group" "eks_node_group" {
 
   ### you cannot specify both the launch_template block and the remote_access block simultaneously
 
-  # launch_template {
-  #   id      = aws_launch_template.eks_node_launch_template.id
-  #   version = "$Latest"
-  # }
+  launch_template {
+    id      = aws_launch_template.eks_node_launch_template.id
+    version = "$Latest"
+  }
 
   #   remote_access {
   #     ec2_ssh_key = var.ec2_ssh_key
