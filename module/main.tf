@@ -74,11 +74,11 @@ bootstrap_self_managed_addons = var.eks_auto_mode ? false : true
 
 # Conditional Compute Config
 dynamic "compute_config" {
-  for_each = var.eks_auto_mode ? [1] : []
+  for_each = var.eks_auto_mode ? [1] : [] # Include the block only when EKS Auto Mode is enabled
   content {
-    enabled      = var.eks_auto_mode # Must match the EKS Auto Mode setting
-    node_pools   = var.node_pools != [] ? var.node_pools : ["general-purpose", "system"]
-    node_role_arn = aws_iam_role.eks_node_group_role.arn
+    enabled      = true
+    node_pools   = ["general-purpose", "system"] # Only valid if enabled
+    node_role_arn = aws_iam_role.eks_node_group_role.arn # Only valid if enabled
   }
 }
 
