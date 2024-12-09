@@ -29,23 +29,23 @@ resource "aws_eks_cluster" "example" {
 #  bootstrap_self_managed_addons = false # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
 
   # Conditional Compute Config
-  dynamic "compute_config" {
-    # for_each = var.compute_config_enabled ? [1] : []
-    for_each = var.eks_auto_mode ? [1] : []
-    content {
-      # Enable or Disable Compute Capability
-      # enabled = var.compute_enabled
-      enabled = var.eks_auto_mode
+  # dynamic "compute_config" {
+  #   # for_each = var.compute_config_enabled ? [1] : []
+  #   for_each = var.eks_auto_mode ? [1] : []
+  #   content {
+  #     # Enable or Disable Compute Capability
+  #     # enabled = var.compute_enabled
+  #     enabled = var.eks_auto_mode
 
-      # Node Pools Configuration
-      # node_pools = var.node_pools != [] ? var.node_pools : ["general-purpose", "system"]
-      node_pools    = var.eks_auto_mode ? var.node_pools : []
+  #     # Node Pools Configuration
+  #     # node_pools = var.node_pools != [] ? var.node_pools : ["general-purpose", "system"]
+  #     node_pools    = var.eks_auto_mode ? var.node_pools : []
 
-      # Node Role ARN
-      # node_role_arn = aws_iam_role.eks_node_group_role.arn
-      node_role_arn = var.eks_auto_mode ? aws_iam_role.eks_node_group_role.arn : null
-    }
-  }
+  #     # Node Role ARN
+  #     # node_role_arn = aws_iam_role.eks_node_group_role.arn
+  #     node_role_arn = var.eks_auto_mode ? aws_iam_role.eks_node_group_role.arn : null
+  #   }
+  # }
 
   # Conditional Kubernetes Network Config
   dynamic "kubernetes_network_config" {
