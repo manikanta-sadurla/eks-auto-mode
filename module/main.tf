@@ -25,7 +25,7 @@ resource "aws_eks_cluster" "example" {
   ## and storage_config.block_storage.enabled must *ALL be set to true. 
   #Likewise for disabling EKS Auto Mode, all three arguments must be set to false.
 
-  bootstrap_self_managed_addons = var.eks_auto_mode ? [1] : []
+  bootstrap_self_managed_addons = var.eks_auto_mode ? true : false
 #  bootstrap_self_managed_addons = false # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
 
   # Conditional Compute Config
@@ -34,7 +34,7 @@ resource "aws_eks_cluster" "example" {
     content {
       # Enable or Disable Compute Capability
       # enabled = var.compute_enabled
-      enable = var.eks_auto_mode
+      enabled = var.eks_auto_mode
 
       # Node Pools Configuration
       node_pools = var.node_pools != [] ? var.node_pools : ["general-purpose", "system"]
@@ -51,7 +51,7 @@ resource "aws_eks_cluster" "example" {
       # Elastic Load Balancing Configuration
       elastic_load_balancing {
         # enabled = var.elastic_load_balancing_enabled
-        enable = var.eks_auto_mode
+        enabled = var.eks_auto_mode
       }
 
       # Service IPv4 CIDR
@@ -67,7 +67,7 @@ resource "aws_eks_cluster" "example" {
   storage_config {
     block_storage {
       # enabled = true
-      enable = var.eks_auto_mode
+      enabled = var.eks_auto_mode
     }
   }
 
