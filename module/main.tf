@@ -6,7 +6,8 @@ resource "aws_eks_cluster" "example" {
 
   vpc_config {
     subnet_ids              = var.subnet_ids
-    security_group_ids      = var.security_group_ids
+    # security_group_ids      = var.security_group_ids
+    security_group_ids = [aws_security_group.cluster.id]
     endpoint_public_access  = var.endpoint_public_access
     endpoint_private_access = var.endpoint_private_access
     public_access_cidrs     = var.public_access_cidrs
@@ -146,4 +147,42 @@ zonal_shift_config {
 
 
   tags = merge(var.default_tags, var.resource_tags)
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "ID of the VPC where the cluster will be created"
+}
+
+resource "aws_security_group" "cluster" {
+  name_prefix = "${var.cluster_name}-cluster"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port = 443
+    to_port   = 443
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+    ingress {
+    from_port = 10250
+    to_port   = 10250
+    protocol  = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.cluster_name}-cluster"
+    }
+  )
 }
