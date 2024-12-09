@@ -72,6 +72,8 @@ aws_managed_policies = [
   "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy",
   "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy",
   "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+  "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+  
 ]
 
 ################ IAM NODE #######################
