@@ -25,27 +25,23 @@ resource "aws_eks_cluster" "example" {
   ## and storage_config.block_storage.enabled must *ALL be set to true. 
   #Likewise for disabling EKS Auto Mode, all three arguments must be set to false.
 
-  bootstrap_self_managed_addons = var.eks_auto_mode ? true : false
-#  bootstrap_self_managed_addons = false # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
+  bootstrap_self_managed_addons = true # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
 
   # Conditional Compute Config
-  # dynamic "compute_config" {
-  #   # for_each = var.compute_config_enabled ? [1] : []
-  #   for_each = var.eks_auto_mode ? [1] : []
-  #   content {
-  #     # Enable or Disable Compute Capability
-  #     # enabled = var.compute_enabled
-  #     enabled = var.eks_auto_mode
+  dynamic "compute_config" {
+    for_each = var.compute_config_enabled ? [1] : []
+    content {
+      # Enable or Disable Compute Capability
+      # enabled = var.compute_enabled
+      enabled = false
 
-  #     # Node Pools Configuration
-  #     # node_pools = var.node_pools != [] ? var.node_pools : ["general-purpose", "system"]
-  #     node_pools    = var.eks_auto_mode ? var.node_pools : []
+      # Node Pools Configuration
+      node_pools = var.node_pools != [] ? var.node_pools : ["general-purpose", "system"]
 
-  #     # Node Role ARN
-  #     # node_role_arn = aws_iam_role.eks_node_group_role.arn
-  #     node_role_arn = var.eks_auto_mode ? aws_iam_role.eks_node_group_role.arn : null
-  #   }
-  # }
+      # Node Role ARN
+      node_role_arn = aws_iam_role.eks_node_group_role.arn
+    }
+  }
 
   # Conditional Kubernetes Network Config
   dynamic "kubernetes_network_config" {
@@ -54,7 +50,7 @@ resource "aws_eks_cluster" "example" {
       # Elastic Load Balancing Configuration
       elastic_load_balancing {
         # enabled = var.elastic_load_balancing_enabled
-        enabled = var.eks_auto_mode
+        enabled = false
       }
 
       # Service IPv4 CIDR
@@ -70,40 +66,10 @@ resource "aws_eks_cluster" "example" {
   storage_config {
     block_storage {
       # enabled = true
-      enabled = var.eks_auto_mode
+      enabled = false
     }
   }
 
-  
-
-# # Bootstrap Self-Managed Addons
-# bootstrap_self_managed_addons = var.eks_auto_mode ? true : false
-
-# # Conditional Compute Config
-# dynamic "compute_config" {
-#   for_each = var.eks_auto_mode ? [1] : [] # Include the block only when EKS Auto Mode is enabled
-#   content {
-#     enabled      = true
-#     node_pools   = ["general-purpose", "system"] # Only valid if enabled
-#     node_role_arn = aws_iam_role.eks_node_group_role.arn # Only valid if enabled
-#   }
-# }
-
-# # Conditional Kubernetes Network Config
-#   kubernetes_network_config {
-#     elastic_load_balancing {
-#       enabled = var.eks_auto_mode
-#     }
-#     ip_family         = var.ip_family != "" ? var.ip_family : "ipv4"
-#     service_ipv4_cidr = var.service_ipv4_cidr != "" ? var.service_ipv4_cidr : null
-#   }
-
-# # Storage Config
-# storage_config {
-#   block_storage {
-#     enabled = var.eks_auto_mode # Must match the EKS Auto Mode setting
-#   }
-# }
 
   # Optional Arguments
   enabled_cluster_log_types = var.enabled_cluster_log_types
