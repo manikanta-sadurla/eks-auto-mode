@@ -154,7 +154,7 @@ variable "compute_config_enabled" {
 variable "compute_enabled" {
   description = "Enable or disable the compute capability for the EKS Auto Mode cluster."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "node_pools" {
