@@ -3,7 +3,7 @@ cluster_name       = "playhq-cluster"
 kubernetes_version = "1.30"
 
 # vpc_id                = "vpc-12345678"
-vpc_id                = "vpc-0e6c09980580ecbf6"
+vpc_id             = "vpc-0e6c09980580ecbf6"
 subnet_ids         = ["subnet-066d0c78479b72e77", "subnet-064b80a494fed9835"]
 security_group_ids = ["sg-02969d9cf1e07897c"]
 
@@ -75,7 +75,7 @@ aws_managed_policies = [
   "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy",
   "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
   "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-  
+
 ]
 
 ################ IAM NODE #######################

@@ -21,7 +21,7 @@ locals {
 
       policy_associations = {
         admin = {
-          policy_arn     = "arn:${local.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          policy_arn = "arn:${local.partition}:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
           access_scope = {
             type = "cluster"
           }
@@ -40,7 +40,7 @@ locals {
     local.bootstrap_cluster_creator_admin_permissions,
     local.access_entries_map
   )
-  
+
   # Flatten the merged access entries with the condition
   flattened_access_entries = flatten([
     for entry_key, entry_val in local.merged_access_entries : [
@@ -120,9 +120,9 @@ resource "aws_eks_access_policy_association" "this" {
   policy_arn    = each.value.association_policy_arn
   principal_arn = each.value.principal_arn
 
-#   depends_on = [
-#     aws_eks_access_entry.this,
-#   ]
+  #   depends_on = [
+  #     aws_eks_access_entry.this,
+  #   ]
 }
 
 
