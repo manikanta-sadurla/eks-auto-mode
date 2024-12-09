@@ -11,7 +11,7 @@ resource "aws_launch_template" "eks_node_launch_template" {
 
   security_group_names = length(var.source_security_group_ids) > 0 ? var.source_security_group_ids : null
 
-  user_data = base64encode(data.template_file.eks_userdata.rendered)
+  # user_data = base64encode(data.template_file.eks_userdata.rendered)
 
   tag_specifications {
     resource_type = "instance"
