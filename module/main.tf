@@ -83,16 +83,13 @@ dynamic "compute_config" {
 }
 
 # Conditional Kubernetes Network Config
-dynamic "kubernetes_network_config" {
-  for_each = var.eks_auto_mode ? [1] : []
-  content {
+  kubernetes_network_config {
     elastic_load_balancing {
-      enabled = var.eks_auto_mode # Must match the EKS Auto Mode setting
+      enabled = var.eks_auto_mode
     }
-    service_ipv4_cidr = var.service_ipv4_cidr != "" ? var.service_ipv4_cidr : null
     ip_family         = var.ip_family != "" ? var.ip_family : "ipv4"
+    service_ipv4_cidr = var.service_ipv4_cidr != "" ? var.service_ipv4_cidr : null
   }
-}
 
 # Storage Config
 storage_config {
