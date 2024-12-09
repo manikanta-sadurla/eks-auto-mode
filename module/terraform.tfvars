@@ -1,6 +1,6 @@
 # Required Variables
 cluster_name       = "playhq-cluster"
-kubernetes_version = "1.31"
+kubernetes_version = "1.30"
 
 # vpc_id                = "vpc-12345678"
 vpc_id                = "vpc-0e6c09980580ecbf6"
