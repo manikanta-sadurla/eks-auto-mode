@@ -124,13 +124,13 @@ variable "resource_tags" {
 variable "kubernetes_network_config_enabled" {
   description = "Whether to enable Kubernetes network configuration block."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "elastic_load_balancing_enabled" {
   description = "Enable or disable Elastic Load Balancing for the cluster."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "service_ipv4_cidr" {
