@@ -39,10 +39,11 @@ resource "aws_eks_cluster" "example" {
 
       # Node Pools Configuration
       # node_pools = var.node_pools != [] ? var.node_pools : ["general-purpose", "system"]
-      node_pools = var.node_pools
+      node_pools    = var.eks_auto_mode ? var.node_pools : []
 
       # Node Role ARN
-      node_role_arn = aws_iam_role.eks_node_group_role.arn
+      # node_role_arn = aws_iam_role.eks_node_group_role.arn
+      node_role_arn = var.eks_auto_mode ? aws_iam_role.eks_node_group_role.arn : null
     }
   }
 
