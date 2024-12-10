@@ -35,6 +35,7 @@ terraform {
 
 module "eks" {
   source = "terraform-aws-modules/terraform-aws-eks"
+  version = "v20.31.1"
 
   cluster_name                   = "terraform-reg"
   cluster_version                = "1.31"
