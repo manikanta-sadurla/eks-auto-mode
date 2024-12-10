@@ -1,16 +1,21 @@
-locals {
-  auto_mode_enabled = try(var.cluster_compute_config.enabled, false)
-}
+# locals {
+#   auto_mode_enabled = try(var.cluster_compute_config.enabled, false)
+# }
 
-variable "cluster_compute_config" {
-  description = "Configuration block for the cluster compute configuration"
-  type        = any
-  default     = {
-        enabled       = true
-    node_pools    = ["general-purpose"]
-    # node_role_arn = aws_iam_role.node.arn
-  }
-}
+# variable "cluster_compute_config" {
+#   description = "Configuration block for the cluster compute configuration"
+#   type        = any
+#   default     = {
+#         enabled       = true
+#     node_pools    = ["general-purpose"]
+#     # node_role_arn = aws_iam_role.node.arn
+#   }
+# }
+# variable "bootstrap_self_managed_addons" {
+#   description = "Indicates whether or not to bootstrap self-managed addons after the cluster has been created"
+#   type        = bool
+#   default     = null
+# }
 
 resource "aws_eks_cluster" "example" {
   name     = var.cluster_name
@@ -40,7 +45,8 @@ resource "aws_eks_cluster" "example" {
   #Likewise for disabling EKS Auto Mode, all three arguments must be set to false.
 
   # bootstrap_self_managed_addons = !var.eks_auto_mode # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
-bootstrap_self_managed_addons = local.auto_mode_enabled ? coalesce(var.bootstrap_self_managed_addons, false) : var.bootstrap_self_managed_addons
+# bootstrap_self_managed_addons = local.auto_mode_enabled ? coalesce(var.bootstrap_self_managed_addons, false) : var.bootstrap_self_managed_addons
+bootstrap_self_managed_addons = true
   # Conditional Compute Config
   dynamic "compute_config" {
     for_each = var.compute_config_enabled ? [1] : []
@@ -145,11 +151,7 @@ bootstrap_self_managed_addons = local.auto_mode_enabled ? coalesce(var.bootstrap
 }
 
 # TODO - hard code to false on next breaking change
-variable "bootstrap_self_managed_addons" {
-  description = "Indicates whether or not to bootstrap self-managed addons after the cluster has been created"
-  type        = bool
-  default     = null
-}
+
 
 variable "vpc_id" {
   type        = string
