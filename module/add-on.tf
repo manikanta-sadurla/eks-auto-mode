@@ -69,7 +69,7 @@ variable "custom_addons" {
     },
     {
       addon_name                  = "kube-proxy"
-      addon_version               = "v1.31.2-eksbuild.3"
+      # addon_version               = "v1.31.2-eksbuild.3"
       resolve_conflicts_on_create = "OVERWRITE"
       resolve_conflicts_on_update = "PRESERVE"
     },
