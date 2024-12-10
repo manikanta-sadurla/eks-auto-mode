@@ -115,12 +115,7 @@ resource "aws_eks_node_group" "eks_node_group" {
 
 # Data to get the EKS optimized AMI version
 data "aws_ssm_parameter" "eks_ami_release_version" {
-  # name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.example.version}/amazon-linux-2023/x86_64/standard/recommended/release_version"
-  # name = "/aws/service/eks/optimized-ami/1.30/amazon-linux-2-arm64/amazon-eks-arm64-node-1.30-v20240729/release_version"
   name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.example.version}/amazon-linux-2023/x86_64/standard/recommended/release_version"
-        
-  # name = "/aws/service/eks/optimized-ami/1.30/amazon-linux-2023/x86_64/nvidia/amazon-eks-node-al2023-x86_64-nvidia-560-1.31-v20241016/image_id"
-  # name = "/aws/service/eks/optimized-ami/1.30/amazon-linux-2023/x86_64/nvidia/amazon-eks-node-al2023-x86_64-nvidia-1.30-v20241024/image_id"
 }
 
 
@@ -174,48 +169,3 @@ variable "launch_template_tag_specifications" {
   }))
   default = []
 }
-
-
-# resource "aws_launch_template" "eks_node_launch_template" {
-#   name_prefix = "eks-node-launch-template"
-
-#   ebs_optimized = true
-
-#   dynamic "block_device_mappings" {
-#     for_each = var.launch_template_block_device_mappings
-#     content {
-#       device_name  = block_device_mappings.key
-#       no_device    = block_device_mappings.value.no_device
-#       virtual_name = block_device_mappings.value.virtual_name
-
-#       dynamic "ebs" {
-#         for_each = block_device_mappings.value.ebs == null ? [] : [block_device_mappings.value.ebs]
-#         content {
-#           delete_on_termination = ebs.value.delete_on_termination
-#           encrypted             = ebs.value.encrypted
-#           iops                  = ebs.value.iops
-#           kms_key_id            = ebs.value.kms_key_id
-#           snapshot_id           = ebs.value.snapshot_id
-#           throughput            = ebs.value.throughput
-#           volume_size           = ebs.value.volume_size
-#           volume_type           = ebs.value.volume_type
-#         }
-#       }
-#     }
-#   }
-
-#   # image_id = var.image_id
-#   # image_id = local.ami_id
-
-#   # image_id = data.aws_ami.amazon_linux.id
-#   image_id = data.aws_ssm_parameter.eks_ami_release_version.value
-#   # key_name = var.key_name
-
-#   dynamic "tag_specifications" {
-#     for_each = var.launch_template_tag_specifications
-#     content {
-#       resource_type = tag_specifications.value
-#       #   tags          = var.node_tags
-#     }
-#   }
-# }
