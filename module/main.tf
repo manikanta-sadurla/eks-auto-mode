@@ -25,8 +25,8 @@ resource "aws_eks_cluster" "example" {
   ## and storage_config.block_storage.enabled must *ALL be set to true. 
   #Likewise for disabling EKS Auto Mode, all three arguments must be set to false.
 
-  bootstrap_self_managed_addons = !var.eks_auto_mode # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
-
+  # bootstrap_self_managed_addons = !var.eks_auto_mode # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
+bootstrap_self_managed_addons = true
   # Conditional Compute Config
   dynamic "compute_config" {
     for_each = var.compute_config_enabled ? [1] : []
