@@ -3,8 +3,8 @@
 resource "aws_launch_template" "eks_node_launch_template" {
   name_prefix   = "eks-node-group-"
   # version_description = "v1"
-  # image_id      = var.ami_type == "AL2_x86_64" ? data.aws_ssm_parameter.eks_ami_release_version.value : var.custom_ami_id
-image_id      = var.ami_type == "AL2_x86_64" ? data.aws_ssm_parameter.eks_ami_release_version.value : data.aws_ssm_parameter.eks_ami_release_version.value
+  image_id      = var.ami_type == "AL2_x86_64" ? data.aws_ssm_parameter.eks_ami_release_version.value : var.custom_ami_id
+# image_id      = var.ami_type == "AL2_x86_64" ? data.aws_ssm_parameter.eks_ami_release_version.value : data.aws_ssm_parameter.eks_ami_release_version.value
   # instance_type = join(",", var.instance_types)
 
   key_name = var.ec2_ssh_key != "" ? var.ec2_ssh_key : null
@@ -88,9 +88,9 @@ resource "aws_eks_node_group" "eks_node_group" {
   # ami_type = "AL2_x86_64" 
   ami_type       = "CUSTOM" ## CUSTOM if launch template is configures 
   instance_types = ["t3.medium"]
-  # release_version = data.aws_ssm_parameter.eks_ami_release_version.value
+  release_version = data.aws_ssm_parameter.eks_ami_release_version.value
   # release_version = local.ami_id == "" ? data.aws_ssm_parameter.eks_ami_release_version.value : null
-  release_version = null
+  # release_version = null
 
   ### you cannot specify both the launch_template block and the remote_access block simultaneously
 
@@ -116,8 +116,9 @@ resource "aws_eks_node_group" "eks_node_group" {
 # Data to get the EKS optimized AMI version
 data "aws_ssm_parameter" "eks_ami_release_version" {
   # name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.example.version}/amazon-linux-2023/x86_64/standard/recommended/release_version"
+  name = "/aws/service/eks/optimized-ami/1.30/amazon-linux-2-arm64/amazon-eks-arm64-node-1.30-v20240729/release_version"
   # name = "/aws/service/eks/optimized-ami/1.30/amazon-linux-2023/x86_64/nvidia/amazon-eks-node-al2023-x86_64-nvidia-560-1.31-v20241016/image_id"
-  name = "/aws/service/eks/optimized-ami/1.30/amazon-linux-2023/x86_64/nvidia/amazon-eks-node-al2023-x86_64-nvidia-1.30-v20241024/image_id"
+  # name = "/aws/service/eks/optimized-ami/1.30/amazon-linux-2023/x86_64/nvidia/amazon-eks-node-al2023-x86_64-nvidia-1.30-v20241024/image_id"
 }
 
 
