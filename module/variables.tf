@@ -96,11 +96,11 @@ variable "outpost_arns" {
 #   default     = false
 # }
 
-variable "bootstrap_self_managed_addons" {
-  description = "Install default unmanaged add-ons during cluster creation."
-  type        = bool
-  default     = true
-}
+# variable "bootstrap_self_managed_addons" {
+#   description = "Install default unmanaged add-ons during cluster creation."
+#   type        = bool
+#   default     = true
+# }
 
 variable "kubernetes_version" {
   description = "Kubernetes version for the cluster."
