@@ -195,5 +195,5 @@ variable "zonal_shift_enabled" {
 variable "eks_auto_mode" {
   description = "Set to true to enable EKS Auto Mode; set to false to disable it."
   type        = bool
-  default     = false
+  default     = true
 }
