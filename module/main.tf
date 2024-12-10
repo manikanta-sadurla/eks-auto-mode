@@ -46,7 +46,7 @@ resource "aws_eks_cluster" "example" {
 
   # bootstrap_self_managed_addons = !var.eks_auto_mode # When EKS Auto Mode is enabled, bootstrapSelfManagedAddons must be set to false
 # bootstrap_self_managed_addons = local.auto_mode_enabled ? coalesce(var.bootstrap_self_managed_addons, false) : var.bootstrap_self_managed_addons
-bootstrap_self_managed_addons = true
+bootstrap_self_managed_addons = false
   # Conditional Compute Config
   dynamic "compute_config" {
     for_each = var.compute_config_enabled ? [1] : []
